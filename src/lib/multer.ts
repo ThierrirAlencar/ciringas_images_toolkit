@@ -1,12 +1,20 @@
 import { FastifyRequest } from "fastify";
 import multer from "fastify-multer";
 
+export interface UploadedFile {
+    path: string;
+    originalname?: string;
+    filename?: string;
+    mimetype?: string;
+    size?: number;
+    [key: string]: any;
+}
+
 export const upload = multer({
     dest:".temp/uploads/"
 })
 
-
-export interface MulterRequest extends FastifyRequest{
+export type MulterRequest = Omit<FastifyRequest, "file"> & {
     [x: string]: any;
-    file:Express.Multer.File // tipagem de arquivo
-}
+    file?: UploadedFile;
+};

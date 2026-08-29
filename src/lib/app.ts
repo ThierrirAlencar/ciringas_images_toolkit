@@ -5,7 +5,10 @@ import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
 import fastifyMultipart from "@fastify/multipart";
 import fastifyStatic from "@fastify/static";
+import swagger from "@fastify/swagger";
+import swaggerUi from "@fastify/swagger-ui";
 import path from "path";
+import { API_URL } from "../config/config";
 
 export const app = fastify()
 
@@ -24,8 +27,7 @@ app.register(cors, {
 
 //Register fastify-static
 app.register(fastifyStatic,{
-    root:path.join(__dirname, '../frontend/')
-    
+    root: path.resolve(process.cwd(), "public")
 })
 
 //registra os cookies
@@ -35,6 +37,35 @@ app.register(fastifyCookie,{})
 //ensina o fastify a ler arquivos 
 app.register(fastifyMultipart)
 
+//register Swagger/OpenAPI docs
+app.register(swagger, {
+    openapi: {
+        openapi: "3.0.0",
+        info: {
+            title: "Images Toolkit API",
+            version: "1.0.0",
+            description: "API for image processing and user auth"
+        },
+        servers: [
+            { url: API_URL, description: "Local development" }
+        ],
+        tags:[
+            {name:"auth", description:"routes used for authentication"},
+            {name:"effects", description:"routes used for image manipulation"},
+            {name:"misc", description:"misc utility routes"},
+        ]
+    }
+})
+
+app.register(swaggerUi, {
+    routePrefix: "/docs",
+    uiConfig: {
+        docExpansion: "full",
+        deepLinking: false
+    },
+    staticCSP: true,
+    transformStaticCSP: (header) => header
+})
 
 //registra as rotas da aplição 
 app.register(router);

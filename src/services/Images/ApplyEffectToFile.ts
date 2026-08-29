@@ -8,7 +8,10 @@ interface ApplyEffecResponse{
 }
 
 interface ApplyEffectRequest{
-    file:Express.Multer.File
+    file: {
+        path: string;
+        [key: string]: any;
+    }
     Effect:Number
     Amount:Number
 }
@@ -33,7 +36,7 @@ export class ApplyEffectToFileUseCase{
         //recurso que converte uma funçao em promessa
         const execPromise = promisify(exec);
         // Usando path.join para garantir compatibilidade de caminho entre sistemas operacionais
-        const pythonScriptPath = path.join(__dirname, '../../python/Effects.py');
+        const pythonScriptPath = path.resolve(process.cwd(), 'src', 'python', 'Effects.py');
 
         const ImagePath = path.join(file.path)
 

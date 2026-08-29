@@ -10,9 +10,13 @@ import { IsUserLoggedIn } from "../../midleware/VerifyJWT";
 import { createImageUseCase } from "../../../services/CreateImage";
 import { unlinkSync } from "fs";
 
-
 export async function FaceRecogntionController(req:MulterRequest,res:FastifyReply) {
     const file = req.file
+    if (!file) {
+        res.status(400).send({ error: "No file uploaded" })
+        return
+    }
+
     const {action} = z.object({
         action:z.string()
     }).parse(req.body)
@@ -21,7 +25,7 @@ export async function FaceRecogntionController(req:MulterRequest,res:FastifyRepl
     const execPromise = promisify(exec);
     try{
         // Usando path.join para garantir compatibilidade de caminho entre sistemas operacionais
-        const pythonScriptPath = path.join(__dirname, '../../../python/Faces/main.py');
+        const pythonScriptPath = path.resolve(process.cwd(), 'src', 'python', 'Faces', 'main.py');
         const ImagePath = path.join(file.path)
         const outPath = path.join("./.temp/images/")
         //stdout= sucesso stderr = erros 
@@ -33,7 +37,7 @@ export async function FaceRecogntionController(req:MulterRequest,res:FastifyRepl
         }else{
             //if logged user, creates an image ref in DB 
             var newImage:Image|null = null;
-            if(await IsUserLoggedIn(req)){
+            if(await IsUserLoggedIn(req) && req.file){
                 const service = new createImageUseCase()
                 newImage = await service.execute({
                     Path:req.file.path,

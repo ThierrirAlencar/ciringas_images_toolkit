@@ -8,12 +8,15 @@ import z from "zod";
 
 export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
     const file = req.file
+    if (!file) {
+        res.status(400).send({ error: "No file uploaded" })
+        return
+    }
+
     const {Effect,Amount}  = z.object({
           Effect:z.string(),
           Amount:z.string()
       }).parse(req.body)
-
-
 
     //initialize main service
     const Service = new ApplyEffectToFileUseCase()
@@ -24,7 +27,7 @@ export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
 
 
         var newImage:Image|null = null;
-        if(await IsUserLoggedIn(req)){
+        if(await IsUserLoggedIn(req) && req.file){
             const ImageResgistyService = new createImageUseCase()
             newImage = await ImageResgistyService.execute({
             Path:req.file.path,

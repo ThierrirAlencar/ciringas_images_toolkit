@@ -3,7 +3,10 @@ import path from "path"
 import { promisify } from "util"
 
 export interface FaceEffectsRequest{
-    file:Express.Multer.File
+    file: {
+        path: string;
+        [key: string]: any;
+    }
     Effect:number
 }
 export interface FaceEffectsResponse{
@@ -17,9 +20,9 @@ export class FaceRecognitionApplyEffectUseCase{
         
         const execPromise = promisify(exec);
 
-        const pPath = path.join(__dirname,this.pythonPath);
+        const pPath = path.resolve(process.cwd(), 'src', this.pythonPath);
 
-        const exitPath = path.join(__dirname,"../../../.temp/images/")
+        const exitPath = path.resolve(process.cwd(), '.temp', 'images');
     
         const iPath = path.join(file.path)
         

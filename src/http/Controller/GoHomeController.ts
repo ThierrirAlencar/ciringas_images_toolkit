@@ -8,7 +8,7 @@ import { promises as fsPromises } from "fs";
 export async function GoHome(req:FastifyRequest,res:FastifyReply){
     try {
 
-        const htmlPath = path.join(__dirname,'../../../public', 'index.html');
+        const htmlPath = path.resolve(process.cwd(), 'public', 'index.html');
         const html = await fsPromises.readFile(htmlPath, 'utf8');
         res.header('Content-Type', 'text/html'); //garante que o navegador irá interpretar a reposta como sendo html 
         res.send(html);
