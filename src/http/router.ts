@@ -26,7 +26,8 @@ export async function router(app:FastifyInstance) {
         prefix:"/image"
     })
     app.register(UserRouter,{
-        prefix:"/user"
+        prefix:"/user",
+        logLevel:"warn"
     })
     app.register(UtilsRoutes,{})
 }

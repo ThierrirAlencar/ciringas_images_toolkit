@@ -6,7 +6,7 @@ export class createUserUseCase{
     async execute(data:Prisma.UserCreateInput):Promise<User>{
         const doesTheEmailAlreadyExists = await prisma.user.findUnique({
             where:{
-                Email:data.Email
+                email:data.email
             }
         })
 

@@ -14,17 +14,43 @@ datasource db {
 }
 
 model User{
-  Id String @id @default(uuid())
-  Email String @unique
-  Password String
-  ImageList Image[]
+  id String @id @default(uuid())
+  
+  // Active data
+  email String @unique
+  password String
+  username String?
+
+  // References
+  imageList Image[]
+
+  // Defaults
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+  deleted_at DateTime? 
+
+  @@map("user")
 }
 
 model Image{
-  Id Int @id @default(autoincrement())
-  Path String 
 
-  userRef User @relation(fields: [UserId],references: [Id])
-  UserId String
+  id Int @id @default(autoincrement())
+  slug String @unique //Unique access storage slug
+  
+  // Actual data
+  path String 
+  mimetype String? //image mimetype
+  size String? //Size on bytes
+
+  // References
+  userRef User @relation(fields: [userId],references: [id])
+  userId String
+
+  // Defaults
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+  deleted_at DateTime? 
+
+  @@map("image")
 }
 

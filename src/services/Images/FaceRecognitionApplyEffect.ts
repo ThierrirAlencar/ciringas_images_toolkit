@@ -28,7 +28,6 @@ export class FaceRecognitionApplyEffectUseCase{
         
         const resp = await execPromise(`python ${pPath} ${iPath} ${exitPath} ${Effect}`)
         
-
         return{
             stdout:""
         }

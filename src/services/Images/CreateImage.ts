@@ -1,5 +1,5 @@
 import { Image, Prisma } from "@prisma/client";
-import { prisma } from "../lib/prisma";
+import { prisma } from "../../lib/prisma";
 import { error } from "console";
 
 export class createImageUseCase{

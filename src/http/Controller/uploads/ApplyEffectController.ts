@@ -1,10 +1,13 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { MulterRequest } from "../../../lib/multer";
 import { IsUserLoggedIn } from "../../midleware/VerifyJWT";
-import { createImageUseCase } from "../../../services/CreateImage";
+import { createImageUseCase } from "../../../services/Images/CreateImage";
 import { Image } from "@prisma/client";
 import { ApplyEffectToFileUseCase } from "../../../services/Images/ApplyEffectToFile";
 import z from "zod";
+import { slugger } from "../../../utils/slugger";
+import { FastifyJWT } from "@fastify/jwt";
+import { jwtUser } from "../../../@types/Fastify-jwt";
 
 export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
     const file = req.file
@@ -25,13 +28,16 @@ export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
             Amount:Number(Amount),Effect:Number(Effect),file
         })
 
-
         var newImage:Image|null = null;
         if(await IsUserLoggedIn(req) && req.file){
+            const user = await req.jwtDecode() as jwtUser; 
             const ImageResgistyService = new createImageUseCase()
             newImage = await ImageResgistyService.execute({
-            Path:req.file.path,
-                UserId:String(req.cookies.sub)
+            path:file.path,
+                userId:String(req.cookies.sub),
+                slug:slugger(`${file.originalname}.${file.mimetype}-${user.sub}`),
+                mimetype:file.mimetype,
+                size:file.size?String(file.size)+"kb":undefined
             })
         }
 

@@ -5,3 +5,5 @@ img
 *.http
 
 
+*.db
+prisma/prisma

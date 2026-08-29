@@ -6,13 +6,13 @@ export class LoginUserUseCase{
         const {Email,Password} = data
         const doesTheUserExists = await prisma.user.findUnique({
             where:{
-                Email
+                email:Email
             }
         })
         if(!doesTheUserExists){
             throw new Error("user does not exists");
-        }else if(doesTheUserExists.Password == Password){
-            return doesTheUserExists.Id
+        }else if(doesTheUserExists.password == Password){
+            return doesTheUserExists.id
         }else{
             throw new Error("wrong password")
         }

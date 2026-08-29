@@ -35,7 +35,7 @@ RUN python3 -m venv /venv \
     && /venv/bin/pip install -r requirements.txt
 
 # Inicializar o prisma
-RUN npx prisma migrate dev
+RUN npx prisma generate dev
 
 # Definir o comando de execução da aplicação em produção (substituir 'dev' por 'start')
 CMD ["npm", "run", "dev"]
