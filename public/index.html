@@ -1,126 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ciringas Image Toolkit</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
-<body> 
-    <div id="app">
-        <div class="card">
-            <h2>Remover background</h2>
-            <form action="http://127.0.0.1:4545/image/remove" method="post" enctype="multipart/form-data" id="form3">
-                <input type="file" name="avatar" id="sub_file3">
-                <input type="submit" class="subInputs" value="Processar Imagem">
-            </form>
-        </div>
+<body class="min-h-screen bg-gray-900 text-gray-200 antialiased">
 
-        <div class="card">
-            <h2>Alterar escala</h2>
-            <form action="http://127.0.0.1:4545/image/rescale" method="post" enctype="multipart/form-data" id="form1">
-                <input type="file" name="avatar" id="sub_file2">
-                <input type="number" name="scale">
-                <input type="submit" class="subInputs" value="Processar Imagem">
-            </form>
+    <header class="border-b border-gray-800">
+        <div class="max-w-6xl mx-auto px-6 py-6 flex items-center gap-3">
+            <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+            <h1 class="font-mono text-sm tracking-[0.2em] text-gray-400 uppercase">Ciringas / Image Toolkit</h1>
         </div>
+    </header>
 
-        <div class="card">
-            <h2>Applicar Efeitos</h2>
-            <form action="http://127.0.0.1:4545/image/effect" method="post" enctype="multipart/form-data" id="form2">
-                <input type="file" name="avatar" id="sub_file2">
-                <select name="Effect" id="select1">
-                    <option value="1">Grayscale</option>
-                    <option value="2">Blur</option>
-                    <option value="3">Canny</option>
-                    <option value="4">Pixelizar</option>
-                    <option value="5">para RGB</option>
-                    <option value="6">para HSV</option>
-                    <option value="7">para HSL</option>
-                    <option value="8">para LUV</option>
-                </select>
-                <input type="range" name="Amount" id="Amount_Input">
-                <input type="submit" class="subInputs" value="Processar Imagem">
-            </form>
-        </div>
+    <div id="app" class="max-w-6xl mx-auto px-6 py-14">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 
-        <div class="card">
-            <h2>Detecção de Faces</h2>
-            <form action="http://127.0.0.1:4545/face/core" method="post" enctype="multipart/form-data" id="form4">
-                <input type="file" name="avatar" id="sub_file4">
-                <select name="Action" id="select2">
-                    <option value="1">separar rostos</option>
-                    <option value="2">Censurar Face</option>
-                </select>
-                <input type="submit" class="subInputs" value="Processar Imagem">
-            </form>
+            <!-- Remover background -->
+            <div class="card group relative flex flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
+                <span class="font-mono text-[11px] tracking-widest text-violet-400/80 uppercase mb-2">Cutout</span>
+                <h2 class="text-lg font-semibold text-gray-100 mb-5">Remover background</h2>
+                <form action="http://127.0.0.1:4545/image/remove" method="post" enctype="multipart/form-data" id="form3" class="mt-auto flex flex-col gap-3">
+                    <label for="sub_file3" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
+                        Selecionar imagem
+                        <input type="file" name="avatar" id="sub_file3" class="hidden">
+                    </label>
+                    <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
+                </form>
+            </div>
+
+            <!-- Alterar escala -->
+            <div class="card group relative flex flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
+                <span class="font-mono text-[11px] tracking-widest text-violet-400/80 uppercase mb-2">Resize</span>
+                <h2 class="text-lg font-semibold text-gray-100 mb-5">Alterar escala</h2>
+                <form action="http://127.0.0.1:4545/image/rescale" method="post" enctype="multipart/form-data" id="form1" class="mt-auto flex flex-col gap-3">
+                    <label for="sub_file2" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
+                        Selecionar imagem
+                        <input type="file" name="avatar" id="sub_file2" class="hidden">
+                    </label>
+                    <input type="number" name="scale" placeholder="Fator de escala" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-200 placeholder-gray-500 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                    <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
+                </form>
+            </div>
+
+            <!-- Aplicar efeitos -->
+            <div class="card group relative flex flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
+                <span class="font-mono text-[11px] tracking-widest text-violet-400/80 uppercase mb-2">Effects</span>
+                <h2 class="text-lg font-semibold text-gray-100 mb-5">Aplicar Efeitos</h2>
+                <form action="http://127.0.0.1:4545/image/effect" method="post" enctype="multipart/form-data" id="form2" class="mt-auto flex flex-col gap-3">
+                    <label for="sub_file2b" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
+                        Selecionar imagem
+                        <input type="file" name="avatar" id="sub_file2b" class="hidden">
+                    </label>
+                    <select name="Effect" id="select1" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-300 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                        <option value="1">Grayscale</option>
+                        <option value="2">Blur</option>
+                        <option value="3">Canny</option>
+                        <option value="4">Pixelizar</option>
+                        <option value="5">para RGB</option>
+                        <option value="6">para HSV</option>
+                        <option value="7">para HSL</option>
+                        <option value="8">para LUV</option>
+                    </select>
+                    <input type="range" name="Amount" id="Amount_Input" class="w-full accent-violet-600">
+                    <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
+                </form>
+            </div>
+
+            <!-- Detecção de faces -->
+            <div class="card group relative flex flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
+                <span class="font-mono text-[11px] tracking-widest text-violet-400/80 uppercase mb-2">Faces</span>
+                <h2 class="text-lg font-semibold text-gray-100 mb-5">Detecção de Faces</h2>
+                <form action="http://127.0.0.1:4545/face/core" method="post" enctype="multipart/form-data" id="form4" class="mt-auto flex flex-col gap-3">
+                    <label for="sub_file4" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
+                        Selecionar imagem
+                        <input type="file" name="avatar" id="sub_file4" class="hidden">
+                    </label>
+                    <select name="Action" id="select2" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-300 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                        <option value="1">Separar rostos</option>
+                        <option value="2">Censurar Face</option>
+                    </select>
+                    <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
+                </form>
+            </div>
+
         </div>
     </div>
+
 </body>
 <script src="functions/forms.js" type="module"></script>
 <script type="module" src="functions/controlRange.js"></script>
 <script src="functions/apiCalls/BgRemove.js" type="module"></script>
 <script src="functions/apiCalls/ReescaleImage.js" type="module"></script>
 <script src="functions/apiCalls/ApplyEffectToImage.js" type="module"></script>
-
-
-<style>
-
-    #app{
-        width: 100%;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        flex-direction: row;
-        gap:2%;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .card{
-        border-radius: 20px;
-        border: 1px dashed gray ;
-        background-color: rgb(238, 238, 238);
-        display: flex;
-        flex-direction: column;
-        gap: 5%;
-        justify-content: center;
-        align-items: center;
-        padding: 60px;
-        width: 300px;
-        gap: 10px;column-gap: 10px;
-        margin: 10px;
-
-    }
-    .card input{
-        width: 90%;
-        outline: none;border: none;
-        height: 30px;text-align: center;
-    }
-    .card button{
-        margin-top: 10px;cursor: pointer;
-        font-size: 20px;font-weight: bold;
-        width: 90%;height: 40px;
-        background-color: rgb(0, 110, 255);
-        border: none;outline: none;color: white;
-    }
-    .card select{
-        color: gray;text-align: center;
-        width: 90%;height: 25px;
-        outline: none;border: none;
-    }
-    h2{ 
-        text-align: center;
-        color: rgb(80, 80, 80);
-        font-family: 'Times New Roman', Times, serif;
-    }
-    .subInputs{
-        margin-top: 10px;cursor: pointer;
-        font-size: 20px;font-weight: bold;
-        width: 90%;height: 40px;
-        background-color: rgb(0, 110, 255);
-        border: none;outline: none;color: white;
-    }
-</style>
 </html>
