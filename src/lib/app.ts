@@ -4,6 +4,8 @@ import { router } from "../http/router";
 import fastifyJwt from "@fastify/jwt";
 import fastifyCookie from "@fastify/cookie";
 import fastifyMultipart from "@fastify/multipart";
+import fastifyStatic from "@fastify/static";
+import path from "path";
 
 export const app = fastify()
 
@@ -12,7 +14,6 @@ app.register(fastifyJwt,{
     secret:"ImagesToolkitLoginAndSingup"
 });
 
-
 //register CORS
 app.register(cors, { 
     origin: true, // Permite todas as origens. Para restringir, você pode especificar uma URL, como 'http://localhost:3000'
@@ -20,6 +21,12 @@ app.register(cors, {
     allowedHeaders: ['Content-Type', 'Authorization'], // Cabeçalhos permitidos
     credentials: true // Permite o envio de cookies e headers de autorização entre o frontend e o backend
 });
+
+//Register fastify-static
+app.register(fastifyStatic,{
+    root:path.join(__dirname, '../frontend/')
+    
+})
 
 //registra os cookies
 app.register(fastifyCookie,{})
