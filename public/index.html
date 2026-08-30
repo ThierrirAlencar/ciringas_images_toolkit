@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,92 +16,590 @@
             }
         }
     </script>
+    <link rel="stylesheet" href="styles/lightMode.css">
+    <style>
+        *{
+            transition: 0.3s;
+        }
+        .animated-delay{
+            transition: 0.5s;
+        }
+    </style>
 </head>
 
 <body class="min-h-screen bg-gray-900 text-gray-200 antialiased">
+    <div class="flex min-h-screen">
 
-    <header class="border-b border-gray-800">
-        <div class="max-w-6xl mx-auto px-6 py-6 flex items-center gap-3">
-            <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
-            <h1 class="font-mono text-sm tracking-[0.2em] text-gray-400 uppercase">Ciringas / Image Toolkit</h1>
-        </div>
-    </header>
-
-    <div id="app" class="max-w-6xl mx-auto px-6 py-14">
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-
-            <!-- Remover background -->
-            <div class="card group relative flex flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
-                <span class="font-mono text-[11px] tracking-widest text-violet-400/80 uppercase mb-2">Cutout</span>
-                <h2 class="text-lg font-semibold text-gray-100 mb-5">Remover background</h2>
-                <form action="http://127.0.0.1:4545/image/remove" method="post" enctype="multipart/form-data" id="form3" class="mt-auto flex flex-col gap-3">
-                    <label for="sub_file3" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
-                        Selecionar imagem
-                        <input type="file" name="avatar" id="sub_file3" class="hidden">
-                    </label>
-                    <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
-                </form>
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 flex w-72 -translate-x-full flex-col border-r border-gray-800 bg-gray-950/95 backdrop-blur transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:bg-gray-950/60">
+            <div class="flex items-center justify-between px-6 py-6 border-b border-gray-800">
+                <div class="flex items-center gap-3">
+                    <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+                    <span class="font-mono text-sm tracking-[0.2em] text-gray-300 uppercase">Ciringas</span>
+                </div>
+                <button id="sidebarClose" type="button" class="rounded-md p-1.5 text-gray-500 hover:bg-gray-800 hover:text-gray-200 lg:hidden">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg>
+                </button>
             </div>
 
-            <!-- Alterar escala -->
-            <div class="card group relative flex flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
-                <span class="font-mono text-[11px] tracking-widest text-violet-400/80 uppercase mb-2">Resize</span>
-                <h2 class="text-lg font-semibold text-gray-100 mb-5">Alterar escala</h2>
-                <form action="http://127.0.0.1:4545/image/rescale" method="post" enctype="multipart/form-data" id="form1" class="mt-auto flex flex-col gap-3">
-                    <label for="sub_file2" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
-                        Selecionar imagem
-                        <input type="file" name="avatar" id="sub_file2" class="hidden">
-                    </label>
-                    <input type="number" name="scale" placeholder="Fator de escala" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-200 placeholder-gray-500 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
-                    <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
-                </form>
+            <nav class="flex-1 overflow-y-auto px-4 py-6">
+                <span class="px-2 font-mono text-[10px] tracking-[0.25em] text-gray-600 uppercase">Ferramentas</span>
+                <div class="mt-3 flex flex-col gap-1">
+                    <a href="#tool-cutout" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M20 4 8.12 15.88"/><path d="M14.47 14.48 20 20"/><path d="M8.12 8.12 12 12"/></svg>
+                        Remover background
+                    </a>
+                    <a href="#tool-resize" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>
+                        Alterar escala
+                    </a>
+                    <a href="#tool-effects" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 4.9L5 9.8l4.1 3-1.5 5 4.4-3 4.4 3-1.5-5 4.1-3-5.1-1.9Z"/></svg>
+                        Aplicar Efeitos
+                    </a>
+                    <a href="#tool-faces" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M6 21a6 6 0 0 1 12 0"/></svg>
+                        Detecção de Faces
+                    </a>
+                </div>
+
+                <span class="mt-8 block px-2 font-mono text-[10px] tracking-[0.25em] text-gray-600 uppercase">Conta</span>
+                <div class="mt-3 flex flex-col gap-1">
+                    <a id="sidebar-login-link" href="#account" class="sidebar-link auth-guest-only group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/></svg>
+                        Login / Cadastro
+                    </a>
+                    <a href="#account" class="sidebar-link auth-user-only hidden group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>
+                        Perfil
+                    </a>
+                    <button type="button" data-sidebar-logout class="auth-user-only hidden w-full sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-left text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+                        Logout
+                    </button>
+                </div>
+
+                <span class="mt-8 block px-2 font-mono text-[10px] tracking-[0.25em] text-gray-600 uppercase">Para Desenvolvedores</span>
+                <div class="mt-3 flex flex-col gap-1">
+                    <a href="#documenation" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/></svg>
+                        Documentação
+                    </a>
+                    <a href="" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>
+                        API
+                    </a>
+                    <a href="https://github.com/ThierrirAlencar" class="sidebar-link group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-gray-300 transition hover:bg-violet-900/30 hover:text-violet-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4.5 w-4.5 shrink-0 text-gray-500 group-hover:text-violet-400" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.221-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0 1 12 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.026 2.747-1.026.546 1.378.203 2.397.1 2.65.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .268.18.58.688.482A10.02 10.02 0 0 0 22 12.017C22 6.484 17.522 2 12 2Z"/></svg>
+                        Github
+                    </a>
+                </div>
+            </nav>
+
+            <div class="border-t border-gray-800 px-6 py-4">
+                <span class="font-mono text-[10px] tracking-[0.2em] text-gray-600 uppercase">api · 127.0.0.1:4545</span>
+            </div>
+        </aside>
+
+        <!-- Mobile overlay -->
+        <div id="sidebarOverlay" class="fixed inset-0 z-30 hidden bg-black/60 backdrop-blur-sm lg:hidden"></div>
+
+        <!-- Main column -->
+        <div class="flex min-w-0 flex-1 flex-col">
+            <header class="sticky top-0 z-20 flex items-center justify-between border-b border-gray-800 bg-gray-900/80 px-4 py-4 backdrop-blur lg:px-8" id="main-header">
+                <div class="flex items-center gap-3" id="main-header-container">
+                    <button id="sidebarOpen" type="button" class="-ml-1 rounded-md p-1.5 text-gray-400 hover:bg-gray-800 hover:text-gray-100 lg:hidden">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5.5 w-5.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/></svg>
+                    </button>
+                    <span class="h-2.5 w-2.5 rounded-full bg-violet-500 lg:hidden"></span>
+                    <h1 class="font-mono text-sm tracking-[0.2em] text-gray-400 uppercase">Ciringas / Images Toolkit</h1>
+                </div>
+                <div class="flex items-center gap-3" id="secondary-header-container">
+                    <div class="flex items-center gap-3">
+                        <button id="themeToggle" type="button" aria-label="Alternar tema" class="rounded-md p-1.5 text-gray-400 transition hover:text-gray-700 hover:text-gray-100 hover:bg-violet-400 cursor-pointer">
+                            <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+                            <svg id="theme-icon-moon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
+                        </button>
+                        <div class="flex items-center gap-3" id="secondary-header-container"></div>
+                    </div>
+                </div>
+            </header>
+
+            <div id="app" class="mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 lg:py-14">
+                <div id="account" class="mb-10 flex flex-col flex-wrap items-stretch justify-center gap-5 scroll-mt-24 lg:flex-row lg:items-center">
+
+                    <div class="w-full rounded-xl border border-gray-800 bg-gray-800/60 p-6 shadow-lg shadow-violet-950/20 lg:w-2/5">
+                        <h1 class="m-2 mt-2 p-2 text-2xl font-semibold text-gray-100">Você não está Logado!</h1>
+                        <h3 class="m-2 p-3 text-gray-300"> O login não é nescessário para usar as ferramentas, apenas serve para guardar seus dados de imagem <br> <strong class="mt-2 cursor-pointer text-violet-400 hover:underline">Saiba como seus dados estão sendo usados</strong></h3>
+                    </div>
+
+                    <!-- Login -->
+                    <div class="animated-delay w-full rounded-xl border border-gray-800 bg-gray-800/60 p-6 shadow-lg shadow-violet-950/20 lg:w-[28%]">
+                        <div class="mb-5 flex items-center justify-between gap-3">
+                            <div>
+                                <span class="font-mono text-[11px] tracking-[0.2em] text-violet-400/80 uppercase">Auth</span>
+                                <h2 class="mt-2 text-xl font-semibold text-gray-100">Login</h2>
+                            </div>
+                            <span class="rounded-full border border-violet-700/60 bg-violet-900/30 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.2em] text-violet-200">/user/login</span>
+                        </div>
+
+                        <form id="loginForm" class="flex flex-col gap-3">
+                            <input type="email" name="email" placeholder="Email" required class="rounded-lg border border-gray-700 bg-gray-900/70 px-3 py-2.5 text-sm text-gray-100 placeholder-gray-500 outline-none transition focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                            <input type="password" name="password" placeholder="Senha" required class="rounded-lg border border-gray-700 bg-gray-900/70 px-3 py-2.5 text-sm text-gray-100 placeholder-gray-500 outline-none transition focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                            <button type="submit" class="mt-2 cursor-pointer rounded-lg bg-violet-700 px-3 py-2.5 font-medium text-white transition hover:bg-violet-600">Entrar</button>
+                        </form>
+                    </div>
+
+                    <!-- Cadastro -->
+                    <div class="animated-delay w-full rounded-xl border border-gray-800 bg-gray-800/60 p-6 shadow-lg shadow-violet-950/20 lg:w-[28%]">
+                        <div class="mb-5 flex items-center justify-between gap-3">
+                            <div>
+                                <span class="font-mono text-[11px] tracking-[0.2em] text-violet-400/80 uppercase">Auth</span>
+                                <h2 class="mt-2 text-xl font-semibold text-gray-100">Cadastrar</h2>
+                            </div>
+                            <span class="rounded-full border border-violet-700/60 bg-violet-900/30 px-2 py-1 text-[10px] font-mono uppercase tracking-[0.2em] text-violet-200">/user/register</span>
+                        </div>
+
+                        <form id="registerForm" class="flex flex-col gap-3">
+                            <input type="email" name="email" placeholder="Email" required class="rounded-lg border border-gray-700 bg-gray-900/70 px-3 py-2.5 text-sm text-gray-100 placeholder-gray-500 outline-none transition focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                            <input type="password" name="password" placeholder="Senha" required class="rounded-lg border border-gray-700 bg-gray-900/70 px-3 py-2.5 text-sm text-gray-100 placeholder-gray-500 outline-none transition focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                            <button type="submit" class="mt-2 cursor-pointer rounded-lg border border-violet-700 bg-violet-900/30 px-3 py-2.5 font-medium text-violet-100 transition hover:border-violet-500 hover:bg-violet-900/40">Criar conta</button>
+                        </form>
+                    </div>
+                </div>
+                
+                <h1 class="p-5 text-2xl m-3">Ferramentas</h1>
+                <hr class="text-violet-500 p-8">
+
+                <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+
+                    <!-- Remover background -->
+                    <div id="tool-cutout" class="card group relative flex scroll-mt-24 flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
+                        <svg viewBox="0 0 100 100" class="mx-auto mb-4 h-28 w-28">
+                            <defs>
+                                <pattern id="checker-cutout" width="10" height="10" patternUnits="userSpaceOnUse">
+                                    <rect width="10" height="10" class="fill-gray-900"/>
+                                    <rect width="5" height="5" class="fill-gray-800"/>
+                                    <rect x="5" y="5" width="5" height="5" class="fill-gray-800"/>
+                                </pattern>
+                            </defs>
+                            <rect x="10" y="10" width="80" height="80" rx="10" class="fill-gray-900 stroke-gray-700" stroke-width="2"/>
+                            <rect x="14" y="14" width="72" height="72" rx="7" fill="url(#checker-cutout)"/>
+                            <path d="M50 34c-6.6 0-12 5.6-12 12.6 0 4.8 2.4 9 6 11.3-8.4 3-14.5 10.7-15 19.6h42c-.5-8.9-6.6-16.6-15-19.6 3.6-2.3 6-6.5 6-11.3C62 39.6 56.6 34 50 34Z" class="fill-violet-500"/>
+                            <rect x="27" y="30" width="46" height="52" rx="8" fill="none" class="stroke-violet-300" stroke-width="2" stroke-dasharray="4 3.5"/>
+                        </svg>
+                        <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Cutout</span>
+                        <h2 class="mb-5 text-lg font-semibold text-gray-100">Remover background</h2>
+                        <form action="http://127.0.0.1:4545/image/remove" method="post" enctype="multipart/form-data" id="form3" class="mt-auto flex flex-col gap-3">
+                            <label for="sub_file3" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
+                                Selecionar imagem
+                                <input type="file" name="avatar" id="sub_file3" class="hidden">
+                            </label>
+                            <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
+                        </form>
+                    </div>
+
+                    <!-- Alterar escala -->
+                    <div id="tool-resize" class="card group relative flex scroll-mt-24 flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
+                        <svg viewBox="0 0 100 100" class="mx-auto mb-4 h-28 w-28">
+                            <rect x="10" y="10" width="80" height="80" rx="10" class="fill-gray-900 stroke-gray-700" stroke-width="2"/>
+                            <circle cx="30" cy="34" r="7" class="fill-violet-500/70"/>
+                            <path d="M18 66l16-18 12 12 14-20 20 26H18Z" class="fill-gray-700"/>
+                            <rect x="14" y="14" width="8" height="8" rx="2" class="fill-violet-400"/>
+                            <rect x="78" y="14" width="8" height="8" rx="2" class="fill-violet-400"/>
+                            <rect x="14" y="78" width="8" height="8" rx="2" class="fill-violet-400"/>
+                            <rect x="78" y="78" width="8" height="8" rx="2" class="fill-violet-400"/>
+                            <path d="M62 62l16 16M78 68v10h-10" fill="none" class="stroke-violet-300" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Resize</span>
+                        <h2 class="mb-5 text-lg font-semibold text-gray-100">Alterar escala</h2>
+                        <form action="http://127.0.0.1:4545/image/rescale" method="post" enctype="multipart/form-data" id="form1" class="mt-auto flex flex-col gap-3">
+                            <label for="sub_file2" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
+                                Selecionar imagem
+                                <input type="file" name="avatar" id="sub_file2" class="hidden">
+                            </label>
+                            <input type="number" name="scale" placeholder="Fator de escala" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-200 placeholder-gray-500 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                            <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
+                        </form>
+                    </div>
+
+                    <!-- Aplicar efeitos -->
+                    <div id="tool-effects" class="card group relative flex scroll-mt-24 flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
+                        <svg viewBox="0 0 100 100" class="mx-auto mb-4 h-28 w-28">
+                            <rect x="10" y="10" width="80" height="80" rx="10" class="fill-gray-900 stroke-gray-700" stroke-width="2"/>
+                            <g style="mix-blend-mode:screen">
+                                <circle cx="40" cy="42" r="16" class="fill-violet-600" opacity="0.55"/>
+                                <circle cx="58" cy="42" r="16" class="fill-violet-400" opacity="0.55"/>
+                                <circle cx="49" cy="56" r="16" class="fill-fuchsia-500" opacity="0.45"/>
+                            </g>
+                            <rect x="26" y="76" width="48" height="4" rx="2" class="fill-gray-700"/>
+                            <circle cx="58" cy="78" r="6" class="fill-violet-300 stroke-gray-900" stroke-width="2"/>
+                        </svg>
+                        <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Effects</span>
+                        <h2 class="mb-5 text-lg font-semibold text-gray-100">Aplicar Efeitos</h2>
+                        <form action="http://127.0.0.1:4545/image/effect" method="post" enctype="multipart/form-data" id="form2" class="mt-auto flex flex-col gap-3">
+                            <label for="sub_file2b" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
+                                Selecionar imagem
+                                <input type="file" name="avatar" id="sub_file2b" class="hidden">
+                            </label>
+                            <select name="Effect" id="select1" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-300 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                                <option value="1">Grayscale</option>
+                                <option value="2">Blur</option>
+                                <option value="3">Canny</option>
+                                <option value="4">Pixelizar</option>
+                                <option value="5">para RGB</option>
+                                <option value="6">para HSV</option>
+                                <option value="7">para HSL</option>
+                                <option value="8">para LUV</option>
+                            </select>
+                            <input type="range" name="Amount" id="Amount_Input" class="w-full accent-violet-600">
+                            <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
+                        </form>
+                    </div>
+
+                    <!-- Detecção de faces -->
+                    <div id="tool-faces" class="card group relative flex scroll-mt-24 flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
+                        <svg viewBox="0 0 100 100" class="mx-auto mb-4 h-28 w-28">
+                            <rect x="10" y="10" width="80" height="80" rx="10" class="fill-gray-900 stroke-gray-700" stroke-width="2"/>
+                            <circle cx="50" cy="42" r="14" class="fill-gray-700"/>
+                            <path d="M28 78c2-12 10-19 22-19s20 7 22 19H28Z" class="fill-gray-700"/>
+                            <g class="stroke-violet-400" stroke-width="3" stroke-linecap="round" fill="none">
+                                <path d="M27 25v-4a4 4 0 0 1 4-4h4"/>
+                                <path d="M73 25v-4a4 4 0 0 0-4-4h-4"/>
+                                <path d="M27 63v4a4 4 0 0 0 4 4h4"/>
+                                <path d="M73 63v4a4 4 0 0 1-4 4h-4"/>
+                            </g>
+                        </svg>
+                        <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Faces</span>
+                        <h2 class="mb-5 text-lg font-semibold text-gray-100">Detecção de Faces</h2>
+                        <form action="http://127.0.0.1:4545/face/core" method="post" enctype="multipart/form-data" id="form4" class="mt-auto flex flex-col gap-3">
+                            <label for="sub_file4" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
+                                Selecionar imagem
+                                <input type="file" name="avatar" id="sub_file4" class="hidden">
+                            </label>
+                            <select name="Action" id="select2" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-300 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
+                                <option value="1">Separar rostos</option>
+                                <option value="2">Censurar Face</option>
+                            </select>
+                            <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
+                        </form>
+                    </div>
+                </div>
+
+                <div class="w-full flex flex-row gap-3 justify-center items-center">
+                    <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+                    <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+                    <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+                    <h1 class="p-5 text-2xl m-3 text-violet-300">Mais Ferramentas em breve</h1> 
+                    <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+                    <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+                    <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+                </div>
+                <hr class="text-violet-500 p-8 dashed">
             </div>
 
-            <!-- Aplicar efeitos -->
-            <div class="card group relative flex flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
-                <span class="font-mono text-[11px] tracking-widest text-violet-400/80 uppercase mb-2">Effects</span>
-                <h2 class="text-lg font-semibold text-gray-100 mb-5">Aplicar Efeitos</h2>
-                <form action="http://127.0.0.1:4545/image/effect" method="post" enctype="multipart/form-data" id="form2" class="mt-auto flex flex-col gap-3">
-                    <label for="sub_file2b" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
-                        Selecionar imagem
-                        <input type="file" name="avatar" id="sub_file2b" class="hidden">
-                    </label>
-                    <select name="Effect" id="select1" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-300 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
-                        <option value="1">Grayscale</option>
-                        <option value="2">Blur</option>
-                        <option value="3">Canny</option>
-                        <option value="4">Pixelizar</option>
-                        <option value="5">para RGB</option>
-                        <option value="6">para HSV</option>
-                        <option value="7">para HSL</option>
-                        <option value="8">para LUV</option>
-                    </select>
-                    <input type="range" name="Amount" id="Amount_Input" class="w-full accent-violet-600">
-                    <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
-                </form>
-            </div>
+            <footer class="border-t border-gray-800 bg-gray-950/60">
+                <div class="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+                    <div class="grid grid-cols-1 gap-8 sm:grid-cols-3">
+                        <div>
+                            <div class="flex items-center gap-3">
+                                <span class="h-2.5 w-2.5 rounded-full bg-violet-500"></span>
+                                <span class="font-mono text-sm tracking-[0.2em] text-gray-300 uppercase">Ciringas</span>
+                            </div>
+                            <p class="mt-3 max-w-xs text-sm text-gray-500">Ferramentas de processamento de imagem — remoção de fundo, escala, efeitos e detecção de faces, direto do navegador.</p>
+                        </div>
 
-            <!-- Detecção de faces -->
-            <div class="card group relative flex flex-col rounded-xl border border-gray-800 bg-gray-800/60 p-6 transition-colors hover:border-violet-800/70">
-                <span class="font-mono text-[11px] tracking-widest text-violet-400/80 uppercase mb-2">Faces</span>
-                <h2 class="text-lg font-semibold text-gray-100 mb-5">Detecção de Faces</h2>
-                <form action="http://127.0.0.1:4545/face/core" method="post" enctype="multipart/form-data" id="form4" class="mt-auto flex flex-col gap-3">
-                    <label for="sub_file4" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
-                        Selecionar imagem
-                        <input type="file" name="avatar" id="sub_file4" class="hidden">
-                    </label>
-                    <select name="Action" id="select2" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-300 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
-                        <option value="1">Separar rostos</option>
-                        <option value="2">Censurar Face</option>
-                    </select>
-                    <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
-                </form>
-            </div>
+                        <div>
+                            <span class="font-mono text-[10px] tracking-[0.25em] text-gray-600 uppercase">Ferramentas</span>
+                            <div class="mt-3 flex flex-col gap-2 text-sm">
+                                <a href="#tool-cutout" class="text-gray-400 transition hover:text-violet-300">Remover background</a>
+                                <a href="#tool-resize" class="text-gray-400 transition hover:text-violet-300">Alterar escala</a>
+                                <a href="#tool-effects" class="text-gray-400 transition hover:text-violet-300">Aplicar Efeitos</a>
+                                <a href="#tool-faces" class="text-gray-400 transition hover:text-violet-300">Detecção de Faces</a>
+                            </div>
+                        </div>
 
+                        <div>
+                            <span class="font-mono text-[10px] tracking-[0.25em] text-gray-600 uppercase">Para Desenvolvedores</span>
+                            <div class="mt-3 flex flex-col gap-2 text-sm">
+                                <a href="/docs" class="text-gray-400 transition hover:text-violet-300" id="sidebar-document">Documentação</a>
+                                <a href="" class="text-gray-400 transition hover:text-violet-300">API</a>
+                                <a href="https://github.com/ThierrirAlencar" class="text-gray-400 transition hover:text-violet-300">Github</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-gray-800 pt-6 text-xs text-gray-600 sm:flex-row">
+                        <span>&copy; <span id="footer-year"></span> Ciringas Image Toolkit.</span>
+                        <span class="font-mono uppercase tracking-[0.2em]">api · 127.0.0.1:4545</span>
+                    </div>
+                </div>
+            </footer>
         </div>
     </div>
 
 </body>
+<script type="module">
+
+
+    const authStatus = document.getElementById('authStatus');
+    const authContainer = document.getElementById('account');
+    const header = document.getElementById("main-header");
+
+    const apiBase = "http://localhost:4545";
+
+    const apiFormEndpoints = {
+        'api-form-remove-background': `${apiBase}/image/remove`,
+        'api-form-rescale-image': `${apiBase}/image/rescale`,
+        'api-form-apply-effect': `${apiBase}/image/effect`,
+        'api-form-face-recognition': `${apiBase}/face/core`
+    };
+
+    Object.entries(apiFormEndpoints).forEach(([elementId, endpointUrl]) => {
+        const form = document.getElementById(elementId);
+        if (form) {
+            form.setAttribute('action', endpointUrl);
+        }
+    });
+
+    const hasJwtToken = () => Boolean(localStorage.getItem('ciringas_auth_token'));
+
+    const updateSidebarAuthState = () => {
+    const isLoggedIn = hasJwtToken();
+
+        document.querySelectorAll('.auth-user-only').forEach((element) => {
+            element.classList.toggle('hidden', !isLoggedIn);
+        });
+
+        document.querySelectorAll('.auth-guest-only').forEach((element) => {
+            element.classList.toggle('hidden', isLoggedIn);
+        });
+
+        if (authContainer) {
+            authContainer.classList.toggle('hidden', isLoggedIn);
+        }
+    };
+
+    const hideAuthContainer = () => {
+        if (authContainer) {
+            const cnt = document.getElementById("secondary-header-container");
+            cnt.innerHTML = "";
+
+            authContainer.classList.add('hidden');
+
+            const profileWrapper = document.createElement("div");
+            profileWrapper.className = "relative";
+
+            const profileButton = document.createElement("button");
+            profileButton.type = "button";
+            profileButton.className = "rounded-xl border-2 border-violet-400 bg-violet-500/10 px-4 py-2.5 text-sm font-bold text-violet-300 cursor-pointer transition hover:border-violet-300 hover:bg-violet-500/20";
+            profileButton.innerHTML = "profile";
+
+            const menu = document.createElement("div");
+            menu.className = "absolute right-0 top-full z-20 mt-2 hidden w-40 overflow-hidden rounded-xl border border-gray-700 bg-gray-900 shadow-lg shadow-violet-950/30";
+
+            [
+                { label: 'profile', action: 'profile' },
+                { label: 'images', action: 'images' },
+                { label: 'logout', action: 'logout' }
+            ].forEach(({ label, action }) => {
+                const item = document.createElement("button");
+                item.type = "button";
+                item.dataset.action = action;
+                item.className = "block w-full border-b border-gray-800 bg-gray-900/90 px-3 py-2 text-left text-sm text-gray-200 transition hover:bg-gray-800 last:border-b-0";
+                item.textContent = label;
+
+                item.addEventListener('click', () => {
+                    if (action === 'logout') {
+                        localStorage.removeItem('ciringas_auth_token');
+                        window.location.reload();
+                        return;
+                    }
+
+                    if (action === 'profile') {
+                        showAuthStatus('Perfil em desenvolvimento.', 'success');
+                    }
+
+                    if (action === 'images') {
+                        showAuthStatus('Área de imagens em desenvolvimento.', 'success');
+                    }
+
+                    menu.classList.add('hidden');
+                });
+
+                menu.appendChild(item);
+            });
+
+            profileButton.addEventListener('click', () => {
+                menu.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!profileWrapper.contains(event.target)) {
+                    menu.classList.add('hidden');
+                }
+            });
+
+            profileWrapper.appendChild(profileButton);
+            profileWrapper.appendChild(menu);
+            cnt.appendChild(profileWrapper);
+
+            updateSidebarAuthState();
+        }
+    };
+
+    if (hasJwtToken()) {
+        hideAuthContainer();
+    } else {
+        updateSidebarAuthState();
+    }
+
+    const showAuthStatus = (message, kind = 'info') => {
+        authStatus.classList.remove('hidden', 'border-red-800/60', 'bg-red-950/30', 'text-red-100', 'border-emerald-800/60', 'bg-emerald-950/30', 'text-emerald-100');
+
+        if (kind === 'error') {
+            authStatus.classList.add('border-red-800/60', 'bg-red-950/30', 'text-red-100');
+        } else if (kind === 'success') {
+            authStatus.classList.add('border-emerald-800/60', 'bg-emerald-950/30', 'text-emerald-100');
+        }
+
+        authStatus.textContent = message;
+        authStatus.classList.remove('hidden');
+    };
+
+    const submitAuth = async (event, mode) => {
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const payload = Object.fromEntries(new FormData(form).entries());
+
+        if (!payload.email || !payload.password) {
+            showAuthStatus('Preencha email e senha antes de continuar.', 'error');
+            return;
+        }
+
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = mode === 'login' ? 'Entrando...' : 'Cadastrando...';
+
+        try {
+            const response = await fetch(`${apiBase}/user/${mode}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    email: payload.email,
+                    password: payload.password
+                })
+            });
+
+            const data = await response.json().catch(() => ({}));
+
+            if (!response.ok) {
+                throw new Error(data?.message || data?.description || 'Falha na autenticação.');
+            }
+
+            if (data?.Token) {
+                localStorage.setItem('ciringas_auth_token', data.Token);
+                showAuthStatus(mode === 'login' ? 'Login realizado com sucesso.' : 'Conta criada com sucesso.', 'success');
+                hideAuthContainer();
+            } else {
+                showAuthStatus(mode === 'login' ? 'Login realizado com sucesso.' : 'Registro concluído com sucesso.', 'success');
+            }
+
+            updateSidebarAuthState();
+
+            form.reset();
+        } catch (error) {
+            console.error(error);
+            showAuthStatus(error.message || 'Não foi possível completar a autenticação.', 'error');
+        } finally {
+            submitButton.disabled = false;
+            submitButton.textContent = originalText;
+        }
+    };
+
+    document.getElementById('loginForm').addEventListener('submit', (event) => submitAuth(event, 'login'));
+    document.getElementById('registerForm').addEventListener('submit', (event) => submitAuth(event, 'register'));
+
+    const footerYear = document.getElementById('footer-year');
+    if (footerYear) footerYear.textContent = new Date().getFullYear();
+</script>
+
+<script>
+     
+ 
+ // Sidebar / mobile navigation
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    const sidebarOpenBtn = document.getElementById('sidebarOpen');
+    const sidebarCloseBtn = document.getElementById('sidebarClose');
+
+    const openSidebar = () => {
+        sidebar.classList.remove('-translate-x-full');
+        sidebarOverlay.classList.remove('hidden');
+    };
+
+    const closeSidebar = () => {
+        sidebar.classList.add('-translate-x-full');
+        sidebarOverlay.classList.add('hidden');
+    };
+
+    sidebarOpenBtn?.addEventListener('click', openSidebar);
+    sidebarCloseBtn?.addEventListener('click', closeSidebar);
+    sidebarOverlay?.addEventListener('click', closeSidebar);
+
+    const handleSidebarLogout = () => {
+        localStorage.removeItem('ciringas_auth_token');
+        updateSidebarAuthState();
+        window.location.reload();
+    };
+
+    document.querySelector('[data-sidebar-logout]')?.addEventListener('click', handleSidebarLogout);
+
+    sidebar?.querySelectorAll('a.sidebar-link').forEach((link) => {
+        link.addEventListener('click', () => {
+            if (window.innerWidth < 1024) closeSidebar();
+        });
+    });
+
+    updateSidebarAuthState();
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        } else {
+            sidebar.classList.add('-translate-x-full');
+        }
+    });
+</script>
+
+<script>
+    const themeToggle = document.getElementById('themeToggle');
+    const sunIcon = document.getElementById('theme-icon-sun');
+    const moonIcon = document.getElementById('theme-icon-moon');
+
+    const applyTheme = (isLight) => {
+        document.documentElement.classList.toggle('light-mode', isLight);
+        sunIcon.classList.toggle('hidden', !isLight);
+        moonIcon.classList.toggle('hidden', isLight);
+    };
+
+    const storedTheme = localStorage.getItem('ciringas_theme');
+    const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+    applyTheme(storedTheme ? storedTheme === 'light' : prefersLight);
+
+    themeToggle.addEventListener('click', () => {
+        const isLight = !document.documentElement.classList.contains('light-mode');
+        applyTheme(isLight);
+        localStorage.setItem('ciringas_theme', isLight ? 'light' : 'dark');
+    });
+</script>
+
 <script src="functions/forms.js" type="module"></script>
 <script type="module" src="functions/controlRange.js"></script>
 <script src="functions/apiCalls/BgRemove.js" type="module"></script>

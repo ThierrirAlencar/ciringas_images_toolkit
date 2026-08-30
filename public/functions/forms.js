@@ -1,6 +1,4 @@
-import {HOST,PORT} from "../../src/lib/env"
-export const baseUrl = `http://${HOST}:${PORT}`
-
+import {api_url as baseUrl} from "../control_handler"
 
 export async function downloadImage(psUrl) {
     try{
