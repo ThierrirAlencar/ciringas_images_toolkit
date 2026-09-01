@@ -58,7 +58,7 @@ else:
         case 8:
             img = cv.cvtColor(img,cv.COLOR_BGR2LUV); pass;
             
-    absolute_path = (os.path.abspath(output_path)+"\ "+file_name+".png").strip()
-    cv.imwrite(absolute_path,img)
+    absolute_path = os.path.join(os.path.abspath(output_path), f"{file_name}.png")
+    cv.imwrite(absolute_path, img)
     print(absolute_path)
     pass

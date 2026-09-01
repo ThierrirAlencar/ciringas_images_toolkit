@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+import { execFile } from "child_process";
 import path from "path";
 import { promisify } from "util";
 import { OutOfRangeError } from "../Errors/OutOfRangeError";
@@ -33,17 +33,18 @@ export class ApplyEffectToFileUseCase{
                 }break;
         }
 
-        //recurso que converte uma funçao em promessa
-        const execPromise = promisify(exec);
-        // Usando path.join para garantir compatibilidade de caminho entre sistemas operacionais
+        const execFilePromise = promisify(execFile);
         const pythonScriptPath = path.resolve(process.cwd(), 'src', 'python', 'Effects.py');
+        const ImagePath = path.resolve(file.path);
+        const exitPath = path.resolve(process.cwd(), '.temp', 'images');
 
-        const ImagePath = path.join(file.path)
-
-        const exitPath = path.join("./.temp/images/")
-
-        //abertura do código para o python 
-        const { stdout, stderr } = await execPromise(`python ${pythonScriptPath} ${ImagePath} ${exitPath} ${Effect} ${Amount}`);
+        const { stdout, stderr } = await execFilePromise('python', [
+            pythonScriptPath,
+            ImagePath,
+            exitPath,
+            String(Effect),
+            String(Amount)
+        ]);
         
         if (stderr) {
             throw new Error(stderr)
