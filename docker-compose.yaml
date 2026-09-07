@@ -1,0 +1,49 @@
+services:
+  # web:
+  #   build:
+  #     context: .
+  #     dockerfile: ./dockerfile
+  #   ports:
+  #     - "8945:8945"
+  #   environment:
+  #     - ENV=production
+  #   depends_on:
+  #     - db
+  #     - storage
+  #     - redis
+  #   restart: unless-stopped
+
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ${POSTGRESQL_USER}
+      POSTGRES_PASSWORD: ${POSTGRESQL_PASSWORD}
+      POSTGRES_DB: ${POSTGRESQL_DB}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRESQL_PORT}:5432"
+    restart: unless-stopped
+
+  storage:
+    image: minio/minio
+    command: server /data
+    ports:
+      - "${MINIO_PORT}:9000"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_PASSWORD}
+    volumes:
+      - minio-data:/data
+    restart: unless-stopped
+
+  redis:
+    image: redis
+    ports:
+      - "${REDIS_PORT}:6379"
+    restart: unless-stopped
+
+
+volumes:
+  db-data:
+  minio-data:
