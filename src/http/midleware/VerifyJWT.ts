@@ -1,5 +1,5 @@
 import { FastifyInstance, FastifyRequest } from "fastify";
-import { MulterRequest } from "../../lib/multer";
+import { MulterRequest } from "../../core/multer";
 
 export async function IsUserLoggedIn(req:MulterRequest | FastifyRequest) {
     try {

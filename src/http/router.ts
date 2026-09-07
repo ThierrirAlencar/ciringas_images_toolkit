@@ -4,7 +4,7 @@ import { GoHome } from "./Controller/GoHomeController";
 import { RemoveFileBg } from "./Controller/uploads/RemoveBackgroundController";
 import { ApplyEffectController } from "./Controller/uploads/ApplyEffectController";
 import { ImageTransaformControler } from "./Controller/uploads/ImageTransformationController";
-import { upload } from "../lib/multer";
+import { upload } from "../core/multer";
 import { LoginController } from "./Controller/User/Login";
 import { GetImagesListWithoutLogin } from "./Controller/Images/getImagesWithoutLogin";
 import { downloadImage } from "./Controller/Images/download";

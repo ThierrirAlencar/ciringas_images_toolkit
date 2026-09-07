@@ -1,6 +1,6 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { GoHome } from "../Controller/GoHomeController";
-import { HOST, PORT } from "../../lib/env";
+import { HOST, PORT } from "../../core/env";
 import { API_URL } from "../../config/config";
 
 export async function UtilsRoutes(app:FastifyInstance) {

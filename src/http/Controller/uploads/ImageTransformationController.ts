@@ -3,14 +3,16 @@ import { promisify } from "util";
 import { exec } from "child_process";
 import path from "path";
 import { z } from "zod";
-import { MulterRequest } from "../../../lib/multer";
-import { HOST, PORT } from "../../../lib/env";
+import { MulterRequest } from "../../../core/multer";
+import { HOST, PORT } from "../../../core/env";
 import { Image } from "@prisma/client";
 import { IsUserLoggedIn } from "../../midleware/VerifyJWT";
 import { createImageUseCase } from "../../../services/Images/CreateImage";
 import { unlinkSync } from "fs";
 import { slugger } from "../../../utils/slugger";
 import { jwtUser } from "../../../@types/Fastify-jwt";
+import { basename } from "node:path";
+import { uploadImage } from "../../../core/minio";
 
 export async function ImageTransaformControler(req:MulterRequest,res:FastifyReply) {
     const file = req.file
@@ -37,6 +39,10 @@ export async function ImageTransaformControler(req:MulterRequest,res:FastifyRepl
             res.status(500).send(`Error: ${stderr}`);
             return;
         }else{
+            const outputPath = stdout.trim();
+            const objectName = `images/final/${basename(outputPath)}`;
+            await uploadImage(objectName, outputPath, "image/png");
+
             //if logged user, creates an image ref in DB 
             var newImage:Image|null = null;
             if(await IsUserLoggedIn(req) && req.file){
@@ -44,7 +50,7 @@ export async function ImageTransaformControler(req:MulterRequest,res:FastifyRepl
                 const user = await req.jwtDecode() as jwtUser;
                 
                 newImage = await service.execute({
-                    path:req.file.path,
+                    path:objectName,
                     userId:String(req.cookies.sub),
                     slug:slugger(`${file.originalname}.${file.mimetype}-${user.sub}`),
                     mimetype:file.mimetype,
@@ -54,9 +60,9 @@ export async function ImageTransaformControler(req:MulterRequest,res:FastifyRepl
             //deletar o arquivo temporario
             unlinkSync(file.path)
             res.status(201).send({
-                ResultFromPython:stdout.replace("\r\n",""),
+                ResultFromPython:objectName,
                 Description:"uploaded and saved image",
-                File:file,
+                File:{ ...file, path:objectName },
                 ToUser:newImage
             })
         }

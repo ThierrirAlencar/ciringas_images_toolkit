@@ -1,6 +1,6 @@
 import { API_URL } from "./config/config"
-import { app } from "./lib/app"
-import { HOST, PORT } from "./lib/env"
+import { app } from "./core/app"
+import { HOST, PORT } from "./core/env"
 
 app.listen({
     port:Number(PORT),

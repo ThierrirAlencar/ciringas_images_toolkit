@@ -15,13 +15,6 @@ RUN npm install
 # Copiar o restante do código para o diretório de trabalho
 COPY . .
 
-# Variaveis de ambiente
-
-ENV HOST 0.0.0.0
-ENV PORT 8945
-ENV OutPath "./.temp/images/"
-ENV DATABASE_URL "file:./dev.db"
-
 # Expor a porta que será utilizada pela aplicação Node.js
 EXPOSE 8945
 

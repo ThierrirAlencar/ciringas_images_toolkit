@@ -1,15 +1,17 @@
 import { exec } from "child_process";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { promisify } from "util";
-import { MulterRequest } from "../../../lib/multer";
+import { MulterRequest } from "../../../core/multer";
 import path from "node:path";
 import { IsUserLoggedIn } from "../../midleware/VerifyJWT";
 import { createImageUseCase } from "../../../services/Images/CreateImage";
 import { unlinkSync } from "fs";
-import { HOST, PORT } from "../../../lib/env";
+import { HOST, PORT } from "../../../core/env";
 import { Image } from "@prisma/client";
 import { slugger } from "../../../utils/slugger";
 import { jwtUser } from "../../../@types/Fastify-jwt";
+import { basename } from "node:path";
+import { uploadImage } from "../../../core/minio";
 
 export async function  RemoveFileBg(req:MulterRequest,res:FastifyReply) {
     const file = req.file
@@ -34,12 +36,16 @@ export async function  RemoveFileBg(req:MulterRequest,res:FastifyReply) {
             res.status(500).send(`Error: ${stderr}`);
             return;
         }else{
+            const outputPath = stdout.trim();
+            const objectName = `images/final/${basename(outputPath)}`;
+            await uploadImage(objectName, outputPath, "image/png");
+
             var newImage:Image|null = null;
             if(await IsUserLoggedIn(req) && req.file){
                 const service = new createImageUseCase()
                 const user = await req.jwtDecode() as jwtUser;
                 newImage = await service.execute({
-                    path:req.file.path,
+                    path:objectName,
                     userId:String(req.cookies.sub),
                     slug:slugger(`${file.originalname}.${file.mimetype}-${user.sub}`),
                     mimetype:file.mimetype,
@@ -50,9 +56,9 @@ export async function  RemoveFileBg(req:MulterRequest,res:FastifyReply) {
             unlinkSync(file.path)
             // res.redirect(`http://${HOST}:${PORT}/image/download")
             res.status(201).send({
-                ResultFromPython:stdout.replace("\r\n",""),
+                ResultFromPython:objectName,
                 Description:"uploaded and saved image",
-                File:file,
+                File:{ ...file, path:objectName },
                 ToUser:newImage
             })
         }

@@ -5,7 +5,7 @@ export async function downloadImage(psUrl) {
         var fileUrl = psUrl
         const url = baseUrl+"/image/download"
         const data = {
-            fileUrl
+            objectName: fileUrl
         }
         const request = await fetch(url,{
             method:"PATCH",
@@ -14,6 +14,9 @@ export async function downloadImage(psUrl) {
             },
             body:JSON.stringify(data)
         })
+        if (!request.ok) {
+            throw new Error(`Image download failed: ${request.status}`)
+        }
         const blob = await request.blob();
         const file_type = blob.type.replace("image/","")
         // Cria um URL para o blob

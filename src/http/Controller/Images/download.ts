@@ -1,31 +1,31 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { readFileSync } from "fs";
 import { z } from "zod";
+import { getImage } from "../../../core/minio";
 
 export async function downloadImage(req: FastifyRequest, res: FastifyReply) {
-  //Validação do corpo da requisição
-  const { fileUrl } = z.object({
-    fileUrl: z.string(),
-  }).parse(req.body);
-  //const fileUrl = "C:/programacao/Ciringas_Images_ToolKit/.temp/images/7b53e78f-517a-466f-9442-382eae6299e3.png"
-  //console.log(fileUrl)
-  // Leitura do arquivo
-  const file = readFileSync(fileUrl);
-  // Definir cabeçalho correto do tipo de imagem
-  res.header("Content-Type", "image/png"); // ou outro tipo de imagem, dependendo do arquivo
-  res.send(file);
-  
-  //study it latter
-  //res.download()
+  const result = z.object({
+    objectName: z.string().min(1),
+  }).safeParse(req.body);
+
+  if (!result.success) {
+    return res.status(400).send({ error: "objectName is required" });
+  }
+
+  const { objectName } = result.data;
+  const fileName = (objectName.split("/").pop() ?? "image.png").replace(/[^a-zA-Z0-9._-]/g, "_");
+
+  try {
+    const object = await getImage(objectName);
+
+    return res.type("image/png").header(
+      "Content-Disposition",
+      `attachment; filename="${fileName}"`,
+    ).send(object);
+  } catch (error: any) {
+    console.error("Unable to download image", error);
+    const statusCode = error?.code === "NoSuchKey" ? 404 : 500;
+    return res.status(statusCode).send({
+      error: statusCode === 404 ? "Image not found" : "Unable to download image",
+    });
+  }
 }
-
-
-/*
-
-router.get('/a/:projectLocator/:fileName', function (req, res) {    
-    const img_url = base64_decode(req.params.projectLocator) + req.params.fileName;
-    res.set({'Content-Type': 'image/png'});
-    request.get(img_url).pipe(res)
-});
-
-*/

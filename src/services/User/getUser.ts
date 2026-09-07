@@ -1,5 +1,5 @@
 import { Image, User } from "@prisma/client";
-import { prisma } from "../../lib/prisma";
+import { prisma } from "../../core/prisma";
 
 
 interface safeUser {
