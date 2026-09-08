@@ -1,18 +1,4 @@
 services:
-  # web:
-  #   build:
-  #     context: .
-  #     dockerfile: ./dockerfile
-  #   ports:
-  #     - "8945:8945"
-  #   environment:
-  #     - ENV=production
-  #   depends_on:
-  #     - db
-  #     - storage
-  #     - redis
-  #   restart: unless-stopped
-
   db:
     image: postgres:13
     environment:
@@ -41,6 +27,27 @@ services:
     image: redis
     ports:
       - "${REDIS_PORT}:6379"
+    restart: unless-stopped
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./dockerfile
+    env_file:
+      - .env
+    environment:
+      NODE_ENV: development
+      API_HOST: 0.0.0.0
+      API_PORT: 4545
+      MINIO_HOST: storage
+      MINIO_PORT: 9000
+      DATABASE_URL: postgresql://${POSTGRESQL_USER}:${POSTGRESQL_PASSWORD}@db:5432/${POSTGRESQL_DB}?schema=public
+    ports:
+      - "4545:4545"
+    depends_on:
+      - db
+      - storage
+      - redis
     restart: unless-stopped
 
 
