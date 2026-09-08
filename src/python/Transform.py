@@ -27,6 +27,6 @@ img = cv.imread(ImageUrl)
 #cria uma janela aonde mostra a imagem
 img = rescaleFrame(img,scale)
 
-absolute_path = (os.path.abspath(Outurl)+"\ "+file_name+".png").strip()
+absolute_path = os.path.abspath(os.path.join(Outurl, file_name + ".png"))
 cv.imwrite(absolute_path,img)
 print(absolute_path)

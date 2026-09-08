@@ -82,6 +82,6 @@ match(Action):
         pass;
 
 # subtracts the remaining image and shows only the faces detected
-absolute_path = (os.path.abspath(output_path)+"\ "+file_name+".png").strip()
+absolute_path = os.path.abspath(os.path.join(output_path, file_name + ".png"))
 cv.imwrite(absolute_path,img)
 print(absolute_path)

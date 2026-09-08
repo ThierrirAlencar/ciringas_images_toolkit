@@ -1,5 +1,6 @@
 {
   "scripts": {
+    "deploy":"prisma generate && prisma db push && tsx src/server.ts",
     "dev": "tsx watch src/server.ts"
   },
   "dependencies": {
