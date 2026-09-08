@@ -8,7 +8,7 @@ document.getElementById('form3').addEventListener('submit', async function(event
     const formData = new FormData(form); // Cria um FormData com os dados do formulário
 
     try {
-        const response = await fetch(baseUrl+'/image/remove', {
+        const response = await fetch(baseUrl+'/image/process/remove', {
             method: 'POST',
             body: formData, // Envia os dados do formulário
         });

@@ -17,6 +17,7 @@
         }
     </script>
     <link rel="stylesheet" href="styles/lightMode.css">
+    <link rel="icon" href="images/ico01.png" type="image/x-icon">
     <style>
         *{
             transition: 0.3s;
@@ -190,7 +191,7 @@
                         </svg>
                         <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Cutout</span>
                         <h2 class="mb-5 text-lg font-semibold text-gray-100">Remover background</h2>
-                        <form action="http://127.0.0.1:4545/image/remove" method="post" enctype="multipart/form-data" id="form3" class="mt-auto flex flex-col gap-3">
+                        <form action="http://127.0.0.1:4545/image/process/remove" method="post" enctype="multipart/form-data" id="form3" class="mt-auto flex flex-col gap-3">
                             <label for="sub_file3" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
                                 Selecionar imagem
                                 <input type="file" name="avatar" id="sub_file3" class="hidden">
@@ -213,7 +214,7 @@
                         </svg>
                         <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Resize</span>
                         <h2 class="mb-5 text-lg font-semibold text-gray-100">Alterar escala</h2>
-                        <form action="http://127.0.0.1:4545/image/rescale" method="post" enctype="multipart/form-data" id="form1" class="mt-auto flex flex-col gap-3">
+                        <form action="http://127.0.0.1:4545/image/process/rescale" method="post" enctype="multipart/form-data" id="form1" class="mt-auto flex flex-col gap-3">
                             <label for="sub_file2" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
                                 Selecionar imagem
                                 <input type="file" name="avatar" id="sub_file2" class="hidden">
@@ -237,7 +238,7 @@
                         </svg>
                         <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Effects</span>
                         <h2 class="mb-5 text-lg font-semibold text-gray-100">Aplicar Efeitos</h2>
-                        <form action="http://127.0.0.1:4545/image/effect" method="post" enctype="multipart/form-data" id="form2" class="mt-auto flex flex-col gap-3">
+                        <form action="http://127.0.0.1:4545/image/process/effect" method="post" enctype="multipart/form-data" id="form2" class="mt-auto flex flex-col gap-3">
                             <label for="sub_file2b" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
                                 Selecionar imagem
                                 <input type="file" name="avatar" id="sub_file2b" class="hidden">
@@ -272,7 +273,7 @@
                         </svg>
                         <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Faces</span>
                         <h2 class="mb-5 text-lg font-semibold text-gray-100">Detecção de Faces</h2>
-                        <form action="http://127.0.0.1:4545/face/core" method="post" enctype="multipart/form-data" id="form4" class="mt-auto flex flex-col gap-3">
+                        <form action="http://127.0.0.1:4545/image/process/faces" method="post" enctype="multipart/form-data" id="form4" class="mt-auto flex flex-col gap-3">
                             <label for="sub_file4" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
                                 Selecionar imagem
                                 <input type="file" name="avatar" id="sub_file4" class="hidden">

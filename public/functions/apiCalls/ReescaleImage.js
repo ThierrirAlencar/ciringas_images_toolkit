@@ -9,7 +9,7 @@ document.getElementById('form1').addEventListener('submit', async function(event
     const formData = new FormData(form);
 
     try {
-        const response = await fetch(baseUrl+'/image/rescale', {
+        const response = await fetch(baseUrl+'/image/process/rescale', {
             method: 'POST',
             body: formData
         });

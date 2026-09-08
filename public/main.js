@@ -8,10 +8,10 @@ const header = document.getElementById("main-header");
 const apiBase = api_url;
 
 const apiFormEndpoints = {
-    'api-form-remove-background': `${apiBase}/image/remove`,
-    'api-form-rescale-image': `${apiBase}/image/rescale`,
-    'api-form-apply-effect': `${apiBase}/image/effect`,
-    'api-form-face-recognition': `${apiBase}/face/core`
+    'api-form-remove-background': `${apiBase}/image/process/remove`,
+    'api-form-rescale-image': `${apiBase}/image/process/rescale`,
+    'api-form-apply-effect': `${apiBase}/image/process/effect`,
+    'api-form-face-recognition': `${apiBase}/image/process/faces`
 };
 
 Object.entries(apiFormEndpoints).forEach(([elementId, endpointUrl]) => {
