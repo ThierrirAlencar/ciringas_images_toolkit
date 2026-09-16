@@ -29,6 +29,13 @@ Setup docker container
 ```bash
 $ docker compose up -p <container_name> -d 
 ```
+
+(Optional) the Project contains a fixed image for older CPUs without specific requirements to run.
+```bash
+$ cp .env.example docker/.env
+$ docker compose -p <image_name> docker/docker-compose[LOWCPU].yaml up -d
+```
+
 ### Running locally in Deploy mode
 Requires a Docker container with postgresql, redis and minIO
 

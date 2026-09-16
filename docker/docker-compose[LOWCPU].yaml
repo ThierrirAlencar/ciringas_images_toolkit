@@ -11,8 +11,9 @@ services:
       - "${POSTGRESQL_PORT}:5432"
     restart: unless-stopped
 
+  # Pulls a low CPU version of MinIO from Quay.io instead of Docker Hub to reduce CPU usage
   storage:
-    image: minio/minio
+    image: quay.io/minio/minio:RELEASE.2024-01-18T22-51-28Z-cpuv1
     command: server /data
     ports:
       - "${MINIO_PORT}:9000"
