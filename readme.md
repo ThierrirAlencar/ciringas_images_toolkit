@@ -17,6 +17,13 @@
     <img src="https://img.shields.io/badge/zod-3.23.8-orange" alt="Zod 3.23.8">
 </p>
 
+## Working features 🎁
+
+- Background remove
+- image modifications like grayscale, blur, pixelization ,edges and color modes. 
+- Image reescale
+- Human Face Recognition and easy modifications applied 
+
 ## Running the package 🚀
 
 ### Using Docker
@@ -107,12 +114,21 @@ Run project (as developer)
 $ npm run dev
 ```
 
-## Working features 🎁
+### Automatic deployment
 
-- Background remove
-- image modifications like grayscale, blur, pixelization ,edges and color modes. 
-- Image reescale
-- Human Face Recognition and easy modifications applied 
+The GitHub Actions workflow checks pull requests targeting `main` and deploys after one is merged. The deployment server must already have Docker, Docker Compose, a clone of this repository, and its own `.env` file in the deployment directory.
+
+Create a `production` environment in the repository and add these secrets:
+
+- `SERVER_HOST`: server hostname or IP address
+- `SERVER_PORT`: SSH port, usually `22`
+- `SERVER_USER`: SSH user
+- `SERVER_PATH`: absolute path of the repository on the server
+- `SERVER_SSH_PRIVATE_KEY`: private key allowed to log in to the server
+- `SERVER_KNOWN_HOSTS`: output of `ssh-keyscan -p <port> <host>`
+
+The SSH user must be able to run Docker, and the repository checkout on the
+server must have `origin` configured to the GitHub repository.
 
 ## What i've learned? 🤓
 
