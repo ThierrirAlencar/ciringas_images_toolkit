@@ -1,6 +1,7 @@
 import { Image, Prisma } from "@prisma/client";
 import { prisma } from "../../core/prisma";
 import { error } from "console";
+import { userNotFoundError } from "../Errors/AuthErrors";
 
 export class createImageUseCase{
     async execute(data:Prisma.ImageUncheckedCreateInput):Promise<Image>{
@@ -8,7 +9,7 @@ export class createImageUseCase{
             data
         })
         if(!doesTheUserExists){
-            throw new Error("The user does not exists")
+            throw new userNotFoundError()
         }
 
         return await prisma.image.create({

@@ -1,6 +1,7 @@
 
 import { User } from "@prisma/client";
 import { prisma } from "../../core/prisma";
+import {userNotFoundError} from "../Errors/AuthErrors";
 
 interface updateUser {
     email:string | undefined
@@ -17,7 +18,7 @@ export class updateUserUseCase {
         })
 
         if(!doesTheUserExists){
-            throw new Error("User does not exists")
+            throw new userNotFoundError();
         }
 
         const update = await prisma.user.update({

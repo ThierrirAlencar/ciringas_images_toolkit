@@ -1,4 +1,5 @@
 import { prisma } from "../../core/prisma";
+import { invalidPasswordError, userNotFoundError } from "../Errors/AuthErrors";
 
 
 export class LoginUserUseCase{
@@ -10,11 +11,11 @@ export class LoginUserUseCase{
             }
         })
         if(!doesTheUserExists){
-            throw new Error("user does not exists");
+            throw new userNotFoundError();
         }else if(doesTheUserExists.password == Password){
             return doesTheUserExists.id
         }else{
-            throw new Error("wrong password")
+            throw new invalidPasswordError();
         }
     }
 }

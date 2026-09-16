@@ -1,11 +1,12 @@
 import * as minio from "minio";
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
-import { MINIO_HOST, MINIO_PASSWORD, MINIO_USE_SSL, MINIO_USER } from "./env";
+import { MINIO_HOST, MINIO_PASSWORD, MINIO_PORT, MINIO_USE_SSL, MINIO_USER } from "./env";
+import { unableToGetImageError, unableToUploadImageError } from "../services/Errors/MinIOErrors";
 
 export const minioClient = new minio.Client({
     endPoint: MINIO_HOST,
-    port: 9000,
+    port: parseInt(MINIO_PORT, 10),
     useSSL: MINIO_USE_SSL,
     accessKey: MINIO_USER,
     secretKey: MINIO_PASSWORD,
@@ -33,19 +34,29 @@ export async function uploadImage(
 ) {
     await minioReady;
     const fileStats = await stat(filePath);
-    await minioClient.putObject(
-        bucketName,
-        objectName,
-        createReadStream(filePath),
-        fileStats.size,
-        { "Content-Type": contentType },
-    );
+    try{
+        await minioClient.putObject(
+            bucketName,
+            objectName,
+            createReadStream(filePath),
+            fileStats.size,
+            { "Content-Type": contentType },
+        );
+    }catch(err){
+        console.error("Error checking file stats:", err);
+        throw new unableToUploadImageError(`Unable to upload image with objectName: ${objectName}`);
+    }
+
     return objectName;
 }
 
 export async function getImage(objectName: string) {
     await minioReady;
-    return minioClient.getObject(bucketName, objectName);
+    const image = await minioClient.getObject(bucketName, objectName);
+    if(!image){
+        throw new unableToGetImageError(`Unable to get image with objectName: ${objectName}`);
+    }
+    return image;
 }
 
 

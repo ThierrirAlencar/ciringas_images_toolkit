@@ -13,6 +13,8 @@ import { slugger } from "../../../utils/slugger";
 import { jwtUser } from "../../../@types/Fastify-jwt";
 import { basename } from "node:path";
 import { uploadImage } from "../../../core/minio";
+import * as authErrors from "../../../services/Errors/AuthErrors"
+import * as minIOErrors from "../../../services/Errors/MinIOErrors"
 
 export async function ImageTransaformControler(req:MulterRequest,res:FastifyReply) {
     const file = req.file
@@ -67,7 +69,20 @@ export async function ImageTransaformControler(req:MulterRequest,res:FastifyRepl
             })
         }
     }catch (error) {
-        console.error(`Error: ${error}`);
-        res.status(500).send({ error: "Unable to process image",errorDetails:error });
+        if(error instanceof authErrors.userNotFoundError){
+            res.status(404).send({
+                description:error.message
+            })
+        }else if(error instanceof minIOErrors.unableToUploadImageError){
+            res.status(500).send({
+                description:"Unable to upload image to MinIO",
+                error
+            })
+        }else{
+            res.status(500).send({
+                description:"Internal server error",
+                error
+            })
+        }
     }
 }

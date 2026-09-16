@@ -1,6 +1,8 @@
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { date, z } from "zod";
 import { LoginUserUseCase } from "../../../services/User/Loginservice";
+import * as authErrors from "../../../services/Errors/AuthErrors"
+
 
 export async function LoginController(req:FastifyRequest, res:FastifyReply) {
     const { email, password } = z.object({
@@ -28,7 +30,19 @@ export async function LoginController(req:FastifyRequest, res:FastifyReply) {
             })
         }
     }catch(err){
-        console.error(err);
-        res.send(err)
+        if(err instanceof authErrors.userNotFoundError){
+            res.status(404).send({
+                Description:"User not found"
+            })
+        }else if(err instanceof authErrors.invalidPasswordError){
+            res.status(401).send({
+                Description:"Invalid password"
+            })
+        }else{
+            res.status(500).send({
+                Description:"Internal server error",
+                Error:err
+            })
+        }
     }
 }

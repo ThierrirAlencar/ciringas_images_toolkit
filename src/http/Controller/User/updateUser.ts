@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { z } from "zod";
 import { updateUserUseCase } from "../../../services/User/updateUser";
+import * as authErrors from "../../../services/Errors/AuthErrors";
 
 export async function updateUserController(req: FastifyRequest, res: FastifyReply) {
     const { email, password, username } = z.object({
@@ -27,8 +28,16 @@ export async function updateUserController(req: FastifyRequest, res: FastifyRepl
             body: _update
         });
     } catch (err) {
-        res.status(500).send({
-            error: err instanceof Error ? err.message : err
-        });
+        if(err instanceof authErrors.userNotFoundError){
+            res.status(404).send({
+                description: "User not found",
+                body: null
+            });
+        }else{
+            res.status(500).send({
+                description: "Internal server error",
+                body: null
+            });
+        }
     }
 }
