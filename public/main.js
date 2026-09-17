@@ -1,4 +1,4 @@
-import {api_url} from "./control_handler"
+import {api_url} from "./control_handler.js"
 
 
 const authStatus = document.getElementById('authStatus');
@@ -23,7 +23,7 @@ Object.entries(apiFormEndpoints).forEach(([elementId, endpointUrl]) => {
 
 
 const getJwtToken = () => localStorage.getItem('ciringas_auth_token') || '';
-const hasJwtToken = () => getJwtToken() !== null;
+const hasJwtToken = () => Boolean(getJwtToken());
 
 const updateSidebarAuthState = () => {
     const isLoggedIn = hasJwtToken();

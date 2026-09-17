@@ -1,4 +1,4 @@
-import {api_url as baseUrl} from "../control_handler"
+import {api_url as baseUrl} from "../control_handler.js"
 
 export async function downloadImage(psUrl) {
     try{
