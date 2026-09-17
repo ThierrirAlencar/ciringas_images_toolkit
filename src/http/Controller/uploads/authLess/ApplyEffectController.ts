@@ -10,6 +10,7 @@ import { FastifyJWT } from "@fastify/jwt";
 import { jwtUser } from "../../../../@types/Fastify-jwt";
 import { basename } from "node:path";
 import { unlink } from "node:fs/promises";
+import { randomUUID } from "node:crypto";
 import { uploadImage } from "../../../../core/minio";
 import * as authErrors from "../../../../services/Errors/AuthErrors"
 import * as minIOErrors from "../../../../services/Errors/MinIOErrors"
@@ -50,7 +51,7 @@ export async function ApplyEffectWithoutLoginController(req:MulterRequest,res:Fa
             newImage = await ImageResgistyService.execute({
             path:objectName,
                 userId:String(req.cookies.sub),
-                slug:slugger(`effect-${Effect}-${Amount}-${file.originalname}.${file.mimetype}-${user.sub}`),
+                slug:slugger(`effect-${Effect}-${Amount}-${file.originalname}.${file.mimetype}-${user.sub}-${randomUUID()}`),
                 mimetype:file.mimetype,
                 size:file.size?String(file.size)+"kb":undefined
             })

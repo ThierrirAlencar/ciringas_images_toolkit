@@ -9,8 +9,8 @@ import * as minIOErros from "../../../services/Errors/MinIOErrors";
 export async function getImageWithoutLogin(req:FastifyRequest, res:FastifyReply){
     
     const { image_url } = z.object({
-        image_url:z.string().url()
-    }).parse(req.params);
+        image_url:z.string()
+    }).parse(req.body);
     
     const service = new getImageBase64WithLoginUseCase()
 
@@ -35,7 +35,8 @@ export async function getImageWithoutLogin(req:FastifyRequest, res:FastifyReply)
                 error: err.name
             })
         }else if(err instanceof minIOErros.unableToGetImageError){ 
-            return res.status(500).send({
+                const isMissingObject = /NoSuchKey|not exist|not found/i.test(err.message);
+                return res.status(isMissingObject ? 404 : 500).send({
                 name: err.name,
                 description: err.message,
                 error: err,

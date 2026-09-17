@@ -19,10 +19,10 @@ export async function ImagesRoutes(app:FastifyInstance) {
     }})
 
     //return image Base64 with Login
-    app.route({method:"GET",url:"/return/base64/{image_id}",handler:getImageBase64WithLogin,schema:{
+    app.route({method:"PATCH",url:"/return/base64",handler:getImageBase64WithLogin,schema:{
         tags:["images"],
         summary:"route used to return the image in base64 format with an authenticated user",
-        params:{
+        body:{
             type:"object",
             properties:{
                 image_id:{type:"number",description:"the id of the image to be retrieved"}
@@ -33,10 +33,10 @@ export async function ImagesRoutes(app:FastifyInstance) {
     }})
 
     //return image Base64 without Login
-    app.route({method:"GET",url:"/return/base64/unlogged/{image_url}",handler:getImageWithoutLogin,schema:{
+    app.route({method:"PATCH",url:"/return/base64/unlogged",handler:getImageWithoutLogin,schema:{
         tags:["images"],
         summary:"route used to return the image in base64 format without authentication",
-        params:{
+        body:{
             type:"object",
             properties:{
                 image_url:{type:"string",description:"the URL of the image to be retrieved"}

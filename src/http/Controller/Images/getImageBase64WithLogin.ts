@@ -10,7 +10,7 @@ export async function getImageBase64WithLogin(req:FastifyRequest, res:FastifyRep
     
     const { image_id } = z.object({
         image_id:z.number().int().positive()
-    }).parse(req.params);
+    }).parse(req.body);
     
     const jwt_decode = await req.jwtDecode() as jwtUser;
     const user_id = jwt_decode.sub   
