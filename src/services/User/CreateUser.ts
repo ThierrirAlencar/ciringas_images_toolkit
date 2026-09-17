@@ -1,5 +1,6 @@
 import { Prisma, User } from "@prisma/client";
 import { prisma } from "../../core/prisma";
+import { userAlreadyExistsError } from "../Errors/AuthErrors";
 
 
 export class createUserUseCase{
@@ -11,7 +12,7 @@ export class createUserUseCase{
         })
 
         if(doesTheEmailAlreadyExists){
-            throw new Error("This email is already in use")
+            throw new userAlreadyExistsError()
         }
 
         const response = await prisma.user.create({

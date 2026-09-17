@@ -3,6 +3,7 @@ import z from "zod";
 import { getUserUseCase } from "../../../services/User/getUser";
 import { describe } from "node:test";
 import { jwtUser } from "../../../@types/Fastify-jwt";
+import * as authErrors from "../../../services/Errors/AuthErrors"
 
 
 export async function getMeController(req:FastifyRequest, res:FastifyReply){
@@ -18,8 +19,15 @@ export async function getMeController(req:FastifyRequest, res:FastifyReply){
             body:_get
         })
     }catch(err){
-        res.status(500).send({
-            error:err
-        })
+        if(err instanceof authErrors.userNotFoundError){
+            res.status(404).send({
+                description:err.message
+            })
+        }else{
+            res.status(500).send({
+                description:"Internal server error",
+                error:err
+            })
+        }
     }
 }

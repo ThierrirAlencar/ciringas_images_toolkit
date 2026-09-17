@@ -1,36 +1,41 @@
-import { exec } from "child_process";
-import { FastifyReply, FastifyRequest } from "fastify";
+import { FastifyReply } from "fastify";
 import { promisify } from "util";
-import { MulterRequest } from "../../../core/multer";
-import path from "node:path";
-import { IsUserLoggedIn } from "../../midleware/VerifyJWT";
-import { createImageUseCase } from "../../../services/Images/CreateImage";
-import { unlinkSync } from "fs";
-import { HOST, PORT } from "../../../core/env";
+import { exec } from "child_process";
+import path from "path";
+import { z } from "zod";
+import { MulterRequest } from "../../../../core/multer";
+import { HOST, PORT } from "../../../../core/env";
 import { Image } from "@prisma/client";
-import { slugger } from "../../../utils/slugger";
-import { jwtUser } from "../../../@types/Fastify-jwt";
+import { IsUserLoggedIn } from "../../../midleware/VerifyJWT";
+import { createImageUseCase } from "../../../../services/Images/CreateImage";
+import { unlinkSync } from "fs";
+import { slugger } from "../../../../utils/slugger";
+import { jwtUser } from "../../../../@types/Fastify-jwt";
 import { basename } from "node:path";
-import { uploadImage } from "../../../core/minio";
+import { uploadImage } from "../../../../core/minio";
+import * as authErrors from "../../../../services/Errors/AuthErrors"
+import * as minIOErrors from "../../../../services/Errors/MinIOErrors"
 
-export async function  RemoveFileBg(req:MulterRequest,res:FastifyReply) {
+export async function ImageTransformationWithoutLoginController(req:MulterRequest,res:FastifyReply) {
     const file = req.file
     if (!file) {
         res.status(400).send({ error: "No file uploaded" })
         return
     }
-    
-    console.log(file)
 
+    const {scale} = z.object({
+        scale:z.string()
+    }).parse(req.body)
+    
     //recurso que converte uma funçao em promessa
     const execPromise = promisify(exec);
     try{
         // Usando path.join para garantir compatibilidade de caminho entre sistemas operacionais
-        const pythonScriptPath = path.resolve(process.cwd(), 'src', 'python', 'bgremove.py');
+        const pythonScriptPath = path.resolve(process.cwd(), 'src', 'python', 'Transform.py');
         const ImagePath = path.join(file.path)
         const outPath = path.join("./.temp/images/")
         //stdout= sucesso stderr = erros 
-        const { stdout, stderr } = await execPromise(`python ${pythonScriptPath} ${ImagePath} ${outPath}`);
+        const { stdout, stderr } = await execPromise(`python ${pythonScriptPath} ${ImagePath} ${outPath} ${scale}`);
         if (stderr) {
             console.error(`stderr: ${stderr}`);
             res.status(500).send(`Error: ${stderr}`);
@@ -40,10 +45,12 @@ export async function  RemoveFileBg(req:MulterRequest,res:FastifyReply) {
             const objectName = `images/final/${basename(outputPath)}`;
             await uploadImage(objectName, outputPath, "image/png");
 
+            //if logged user, creates an image ref in DB 
             var newImage:Image|null = null;
             if(await IsUserLoggedIn(req) && req.file){
                 const service = new createImageUseCase()
                 const user = await req.jwtDecode() as jwtUser;
+                
                 newImage = await service.execute({
                     path:objectName,
                     userId:String(req.cookies.sub),
@@ -54,7 +61,6 @@ export async function  RemoveFileBg(req:MulterRequest,res:FastifyReply) {
             }
             //deletar o arquivo temporario
             unlinkSync(file.path)
-            // res.redirect(`http://${HOST}:${PORT}/image/download")
             res.status(201).send({
                 ResultFromPython:objectName,
                 Description:"uploaded and saved image",
@@ -62,9 +68,21 @@ export async function  RemoveFileBg(req:MulterRequest,res:FastifyReply) {
                 ToUser:newImage
             })
         }
-        res.send(`Result from Python: ${stdout}`);
     }catch (error) {
-        console.error(`Error: ${error}`);
-        res.status(500).send({ error: "Unable to process image",errorDetails:error });
+        if(error instanceof authErrors.userNotFoundError){
+            res.status(404).send({
+                description:error.message
+            })
+        }else if(error instanceof minIOErrors.unableToUploadImageError){
+            res.status(500).send({
+                description:"Unable to upload image to MinIO",
+                error
+            })
+        }else{
+            res.status(500).send({
+                description:"Internal server error",
+                error
+            })
+        }
     }
 }

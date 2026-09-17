@@ -2,7 +2,7 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 import { getUserUseCase } from "../../../services/User/getUser";
 import { describe } from "node:test";
-
+import * as authErrors from "../../../services/Errors/AuthErrors";
 
 export async function getUniqueUserController(req:FastifyRequest, res:FastifyReply){
     const {id} = z.object({
@@ -19,8 +19,16 @@ export async function getUniqueUserController(req:FastifyRequest, res:FastifyRep
             body:_get
         })
     }catch(err){
-        res.status(500).send({
-            error:err
-        })
+        if(err instanceof authErrors.userNotFoundError){
+            res.status(404).send({
+                description:"User not found",
+                body:null
+            })
+        }else{
+            res.status(500).send({
+                description:"Internal server error",
+                body:null
+            })
+        }
     }
 }

@@ -22,10 +22,10 @@ export async function downloadImage(req: FastifyRequest, res: FastifyReply) {
       `attachment; filename="${fileName}"`,
     ).send(object);
   } catch (error: any) {
-    console.error("Unable to download image", error);
-    const statusCode = error?.code === "NoSuchKey" ? 404 : 500;
-    return res.status(statusCode).send({
-      error: statusCode === 404 ? "Image not found" : "Unable to download image",
-    });
+    if (error.code === "NoSuchKey") {
+      return res.status(404).send({ error: "Image not found" });
+    }else if(error instanceof Error && error.message.includes("Unable to download image")) {
+      return res.status(500).send({ error: "Unable to download image" });
+    }
   }
 }

@@ -3,16 +3,18 @@ import { promisify } from "util";
 import { exec } from "child_process";
 import path from "path";
 import { z } from "zod";
-import { MulterRequest } from "../../../core/multer";
-import { HOST, PORT } from "../../../core/env";
+import { MulterRequest } from "../../../../core/multer";
+import { HOST, PORT } from "../../../../core/env";
 import { Image } from "@prisma/client";
-import { IsUserLoggedIn } from "../../midleware/VerifyJWT";
-import { createImageUseCase } from "../../../services/Images/CreateImage";
+import { IsUserLoggedIn } from "../../../midleware/VerifyJWT";
+import { createImageUseCase } from "../../../../services/Images/CreateImage";
 import { unlinkSync } from "fs";
-import { slugger } from "../../../utils/slugger";
-import { jwtUser } from "../../../@types/Fastify-jwt";
+import { slugger } from "../../../../utils/slugger";
+import { jwtUser } from "../../../../@types/Fastify-jwt";
 import { basename } from "node:path";
-import { uploadImage } from "../../../core/minio";
+import { uploadImage } from "../../../../core/minio";
+import * as authErrors from "../../../../services/Errors/AuthErrors"
+import * as minIOErrors from "../../../../services/Errors/MinIOErrors"
 
 export async function FaceRecogntionController(req:MulterRequest,res:FastifyReply) {
     const file = req.file
@@ -20,6 +22,9 @@ export async function FaceRecogntionController(req:MulterRequest,res:FastifyRepl
         res.status(400).send({ error: "No file uploaded" })
         return
     }
+
+    const jwt_decode = await req.jwtDecode() as jwtUser;
+    const user_id = jwt_decode.sub   
 
     const {action} = z.object({
         action:z.string()
@@ -48,17 +53,18 @@ export async function FaceRecogntionController(req:MulterRequest,res:FastifyRepl
 
             //if logged user, creates an image ref in DB 
             var newImage:Image|null = null;
-            if(await IsUserLoggedIn(req) && req.file){
-                const service = new createImageUseCase()
-                const user = await req.jwtDecode() as jwtUser;
-                newImage = await service.execute({
-                    path:objectName,
-                    userId:String(req.cookies.sub),
-                    slug:slugger(`${file.originalname}.${file.mimetype}-${user.sub}`),
-                    mimetype:file.mimetype,
-                    size:file.size?String(file.size)+"kb":undefined
-                })
-            }
+            
+            //create an image ref in DB since the user is logged in
+            const service = new createImageUseCase()
+            const user = await req.jwtDecode() as jwtUser;
+            newImage = await service.execute({
+                path:objectName,
+                userId:user_id,
+                slug:slugger(`${file.originalname}.${file.mimetype}-${user.sub}`),
+                mimetype:file.mimetype,
+                size:file.size?String(file.size)+"kb":undefined
+            })
+            
             //deletar o arquivo temporario
             unlinkSync(file.path)
             res.status(201).send({
@@ -69,7 +75,20 @@ export async function FaceRecogntionController(req:MulterRequest,res:FastifyRepl
             })
         }
     }catch (error) {
-        console.error(`Error: ${error}`);
-        res.status(500).send({ error: "Unable to process image",errorDetails:error });
+        if(error instanceof authErrors.userNotFoundError){
+            res.status(404).send({
+                description:error.message
+            })
+        }else if(error instanceof minIOErrors.unableToUploadImageError){
+            res.status(500).send({
+                description:"Unable to upload image to MinIO",
+                error
+            })
+        }else{
+            res.status(500).send({
+                description:"Internal server error",
+                error
+            })
+        }
     }
 }

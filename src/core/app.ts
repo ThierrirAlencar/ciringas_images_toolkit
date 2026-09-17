@@ -49,6 +49,15 @@ app.register(swagger, {
         servers: [
             { url: API_URL, description: "Local development" }
         ],
+        components: {
+            securitySchemes: {
+                bearerAuth: {
+                    type: "http",
+                    scheme: "bearer",
+                    bearerFormat: "JWT"
+                }
+            }
+        },
         tags:[
             {name:"auth", description:"routes used for authentication"},
             {name:"effects", description:"routes used for image manipulation"},

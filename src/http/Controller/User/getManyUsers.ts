@@ -14,7 +14,8 @@ export async function getManyUserController(req:FastifyRequest, res:FastifyReply
         })
     }catch(err){
         res.status(500).send({
-            error:err
+            error:err,
+            description:"Internal server error"
         })
     }
 }

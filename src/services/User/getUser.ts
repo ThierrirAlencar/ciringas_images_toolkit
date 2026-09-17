@@ -1,5 +1,6 @@
 import { Image, User } from "@prisma/client";
 import { prisma } from "../../core/prisma";
+import { userNotFoundError } from "../Errors/AuthErrors";
 
 
 interface safeUser {
@@ -20,7 +21,7 @@ export class getUserUseCase {
         })
         
         if(!doesTheUserExists){
-            throw new Error("User does not exits")
+            throw new userNotFoundError();
         }
 
         const imageList = await prisma.image.findMany({

@@ -1,18 +1,21 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { MulterRequest } from "../../../core/multer";
-import { IsUserLoggedIn } from "../../midleware/VerifyJWT";
-import { createImageUseCase } from "../../../services/Images/CreateImage";
+import { MulterRequest } from "../../../../core/multer";
+import { IsUserLoggedIn } from "../../../midleware/VerifyJWT";
+import { createImageUseCase } from "../../../../services/Images/CreateImage";
 import { Image } from "@prisma/client";
-import { ApplyEffectToFileUseCase } from "../../../services/Images/ApplyEffectToFile";
+import { ApplyEffectToFileUseCase } from "../../../../services/Images/ApplyEffectToFile";
 import z from "zod";
-import { slugger } from "../../../utils/slugger";
+import { slugger } from "../../../../utils/slugger";
 import { FastifyJWT } from "@fastify/jwt";
-import { jwtUser } from "../../../@types/Fastify-jwt";
+import { jwtUser } from "../../../../@types/Fastify-jwt";
 import { basename } from "node:path";
 import { unlink } from "node:fs/promises";
-import { uploadImage } from "../../../core/minio";
+import { randomUUID } from "node:crypto";
+import { uploadImage } from "../../../../core/minio";
+import * as authErrors from "../../../../services/Errors/AuthErrors"
+import * as minIOErrors from "../../../../services/Errors/MinIOErrors"
 
-export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
+export async function ApplyEffectWithoutLoginController(req:MulterRequest,res:FastifyReply){
     const file = req.file
     if (!file) {
         res.status(400).send({ error: "No file uploaded" })
@@ -26,6 +29,7 @@ export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
 
     //initialize main service
     const Service = new ApplyEffectToFileUseCase()
+   
     try{
         const {stdout} = await Service.execute({
             Amount:Number(Amount),Effect:Number(Effect),file
@@ -47,7 +51,7 @@ export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
             newImage = await ImageResgistyService.execute({
             path:objectName,
                 userId:String(req.cookies.sub),
-                slug:slugger(`effect-${Effect}-${Amount}-${file.originalname}.${file.mimetype}-${user.sub}`),
+                slug:slugger(`effect-${Effect}-${Amount}-${file.originalname}.${file.mimetype}-${user.sub}-${randomUUID()}`),
                 mimetype:file.mimetype,
                 size:file.size?String(file.size)+"kb":undefined
             })
@@ -63,7 +67,20 @@ export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
         })
         await unlink(file.path).catch(() => undefined);
     }catch (error) {
-        console.error(error);
-        res.status(500).send({ error: "Unable to process image",errorDetails:error });
+        if(error instanceof authErrors.userNotFoundError){
+            res.status(404).send({
+                description:error.message
+            })
+        }else if(error instanceof minIOErrors.unableToUploadImageError){
+            res.status(500).send({
+                description:"Unable to upload image to MinIO",
+                error
+            })
+        }else{
+            res.status(500).send({
+                description:"Internal server error",
+                error
+            })
+        }
     }
 }

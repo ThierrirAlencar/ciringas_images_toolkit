@@ -13,7 +13,6 @@ export async function GoHome(req:FastifyRequest,res:FastifyReply){
         res.header('Content-Type', 'text/html'); //garante que o navegador irá interpretar a reposta como sendo html 
         res.send(html);
     } catch (err) {
-        console.error(err);
         res.status(500).send('Internal Server Error');
     }
 }

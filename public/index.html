@@ -30,7 +30,6 @@
 
 <body class="min-h-screen bg-gray-900 text-gray-200 antialiased">
     <div class="flex min-h-screen">
-
         <!-- Sidebar -->
         <aside id="sidebar" class="fixed inset-y-0 left-0 z-40 flex w-72 -translate-x-full flex-col border-r border-gray-800 bg-gray-950/95 backdrop-blur transition-transform duration-300 ease-in-out lg:static lg:translate-x-0 lg:bg-gray-950/60">
             <div class="flex items-center justify-between px-6 py-6 border-b border-gray-800">
@@ -115,7 +114,7 @@
                     <span class="h-2.5 w-2.5 rounded-full bg-violet-500 lg:hidden"></span>
                     <h1 class="font-mono text-sm tracking-[0.2em] text-gray-400 uppercase">Ciringas / Images Toolkit</h1>
                 </div>
-                <div class="flex items-center gap-3" id="secondary-header-container">
+                <div class="flex items-center gap-3">
                     <div class="flex items-center gap-3">
                         <button id="themeToggle" type="button" aria-label="Alternar tema" class="rounded-md p-1.5 text-gray-400 transition hover:text-gray-700 hover:text-gray-100 hover:bg-violet-400 cursor-pointer">
                             <svg id="theme-icon-sun" xmlns="http://www.w3.org/2000/svg" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
@@ -171,6 +170,19 @@
                 
                 <h1 class="p-5 text-2xl m-3">Ferramentas</h1>
                 <hr class="text-violet-500 p-8">
+
+                <section id="processedImagePreview" class="mb-10 hidden rounded-xl border border-gray-800 bg-gray-800/60 p-6">
+                    <div class="mb-4 flex items-center justify-between gap-3">
+                        <div>
+                            <span class="font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Resultado</span>
+                            <h2 class="mt-2 text-xl font-semibold text-gray-100">Imagem processada</h2>
+                        </div>
+                        <span id="processedImageStatus" class="text-sm text-gray-500">O resultado aparecerá aqui.</span>
+                    </div>
+                    <div class="flex min-h-48 items-center justify-center overflow-auto rounded-lg border border-dashed border-gray-700 bg-gray-900/60 p-4">
+                        <canvas id="processedImageCanvas" class="hidden max-h-[32rem] max-w-full object-contain"></canvas>
+                    </div>
+                </section>
 
                 <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
@@ -510,10 +522,12 @@
             } else {
                 showAuthStatus(mode === 'login' ? 'Login realizado com sucesso.' : 'Registro concluído com sucesso.', 'success');
             }
-
+            
             updateSidebarAuthState();
 
             form.reset();
+
+            await page.reload();
         } catch (error) {
             console.error(error);
             showAuthStatus(error.message || 'Não foi possível completar a autenticação.', 'error');
@@ -606,4 +620,5 @@
 <script src="functions/apiCalls/BgRemove.js" type="module"></script>
 <script src="functions/apiCalls/ReescaleImage.js" type="module"></script>
 <script src="functions/apiCalls/ApplyEffectToImage.js" type="module"></script>
+<script src="functions/apiCalls/FaceRecognition.js" type="module"></script>
 </html>
