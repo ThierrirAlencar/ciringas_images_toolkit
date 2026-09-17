@@ -1,20 +1,20 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { MulterRequest } from "../../../core/multer";
-import { IsUserLoggedIn } from "../../midleware/VerifyJWT";
-import { createImageUseCase } from "../../../services/Images/CreateImage";
+import { MulterRequest } from "../../../../core/multer";
+import { IsUserLoggedIn } from "../../../midleware/VerifyJWT";
+import { createImageUseCase } from "../../../../services/Images/CreateImage";
 import { Image } from "@prisma/client";
-import { ApplyEffectToFileUseCase } from "../../../services/Images/ApplyEffectToFile";
+import { ApplyEffectToFileUseCase } from "../../../../services/Images/ApplyEffectToFile";
 import z from "zod";
-import { slugger } from "../../../utils/slugger";
+import { slugger } from "../../../../utils/slugger";
 import { FastifyJWT } from "@fastify/jwt";
-import { jwtUser } from "../../../@types/Fastify-jwt";
+import { jwtUser } from "../../../../@types/Fastify-jwt";
 import { basename } from "node:path";
 import { unlink } from "node:fs/promises";
-import { uploadImage } from "../../../core/minio";
-import * as authErrors from "../../../services/Errors/AuthErrors"
-import * as minIOErrors from "../../../services/Errors/MinIOErrors"
+import { uploadImage } from "../../../../core/minio";
+import * as authErrors from "../../../../services/Errors/AuthErrors"
+import * as minIOErrors from "../../../../services/Errors/MinIOErrors"
 
-export async function ApplyEffectController(req:MulterRequest,res:FastifyReply){
+export async function ApplyEffectWithoutLoginController(req:MulterRequest,res:FastifyReply){
     const file = req.file
     if (!file) {
         res.status(400).send({ error: "No file uploaded" })

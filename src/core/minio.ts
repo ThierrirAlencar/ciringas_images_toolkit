@@ -59,4 +59,7 @@ export async function getImage(objectName: string) {
     return image;
 }
 
-
+export async function downloadImage(objectName: string, filePath: string) {
+    await minioReady;
+    await minioClient.fGetObject(bucketName, objectName, filePath);
+}

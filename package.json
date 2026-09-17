@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "deploy":"prisma generate && prisma db push && tsx src/server.ts",
+    "deploy": "prisma generate && prisma db push && tsx src/server.ts",
     "dev": "tsx watch src/server.ts"
   },
   "dependencies": {
@@ -19,6 +19,7 @@
     "dotenv": "^16.4.5",
     "fastify": "^5.0.0",
     "fastify-multer": "^2.0.3",
+    "image-to-base64": "^2.2.0",
     "minio": "^8.0.7",
     "prisma": "^5.22.0",
     "tsx": "^4.19.1",

@@ -1,9 +1,9 @@
 
 import { FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import { GoHome } from "./Controller/GoHomeController";
-import { RemoveFileBg } from "./Controller/uploads/RemoveBackgroundController";
-import { ApplyEffectController } from "./Controller/uploads/ApplyEffectController";
-import { ImageTransaformControler } from "./Controller/uploads/ImageTransformationController";
+import { RemoveFileBg } from "./Controller/uploads/authLess/RemoveBackgroundController";
+import { ApplyEffectController } from "./Controller/uploads/authLess/ApplyEffectController";
+import { ImageTransaformControler } from "./Controller/uploads/authLess/ImageTransformationController";
 import { upload } from "../core/multer";
 import { LoginController } from "./Controller/User/Login";
 import { GetImagesListWithoutLogin } from "./Controller/Images/getImagesWithoutLogin";

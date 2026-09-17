@@ -17,7 +17,6 @@ export async function UserRouter(app:FastifyInstance) {
             body: {
                 type: "object",
                 properties: {
-                    username: { type: "string" },
                     email: { type: "string", format: "email" },
                     password: { type: "string" }
                 },

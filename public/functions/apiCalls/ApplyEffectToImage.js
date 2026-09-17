@@ -1,5 +1,6 @@
 
 import {baseUrl, downloadImage} from "../forms"
+import { getJwtToken } from "../../main";
 
 //apply effect to image
 document.getElementById('form2').addEventListener('submit', async function(event) {
@@ -12,6 +13,9 @@ document.getElementById('form2').addEventListener('submit', async function(event
         const response = await fetch(baseUrl+'/image/process/effect', {
             method: 'POST',
             body: formData, // Envia os dados do formulário
+            headers: token ? {
+                'Authorization': `Bearer ${token}`
+            } : {}, //Se estiver logado usa o token, se não, envia vazio
         });
         
         if (response.ok) {
@@ -19,7 +23,7 @@ document.getElementById('form2').addEventListener('submit', async function(event
             console.log('Imagem processada:', result);
             const ptUrl = result.ResultFromPython
             console.log("image is at: "+ptUrl)
-            await downloadImage(ptUrl);
+            //await downloadImage(ptUrl);
         } else {
             console.error('Erro ao processar a imagem:', response.statusText);
         }

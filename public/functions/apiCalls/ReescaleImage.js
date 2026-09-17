@@ -1,5 +1,6 @@
 
 import {baseUrl, downloadImage} from "../forms"
+import { getJwtToken } from "../../main";
 
 //Reescale Image
 document.getElementById('form1').addEventListener('submit', async function(event) {
@@ -11,7 +12,10 @@ document.getElementById('form1').addEventListener('submit', async function(event
     try {
         const response = await fetch(baseUrl+'/image/process/rescale', {
             method: 'POST',
-            body: formData
+            body: formData,
+            headers: token ? {
+                'Authorization': `Bearer ${token}`,
+            } : {}, //Se estiver logado usa o token, se não, envia vazio
         });
 
         if (response.ok) {
@@ -19,7 +23,7 @@ document.getElementById('form1').addEventListener('submit', async function(event
             console.log('Imagem processada:', result);
             const ptUrl = result.ResultFromPython
             console.log("image is at: "+ptUrl)
-            await downloadImage(ptUrl)
+            //await downloadImage(ptUrl)
         } else {
             console.error('Erro ao processar a imagem:', response.statusText);
         }
