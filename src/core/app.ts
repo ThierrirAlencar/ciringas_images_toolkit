@@ -8,7 +8,7 @@ import fastifyStatic from "@fastify/static";
 import swagger from "@fastify/swagger";
 import swaggerUi from "@fastify/swagger-ui";
 import path from "path";
-import { API_URL } from "../config/config";
+import { PUBLIC_API_URL } from "../config/config";
 
 export const app = fastify()
 
@@ -47,7 +47,7 @@ app.register(swagger, {
             description: "API for image processing and user auth"
         },
         servers: [
-            { url: API_URL, description: "Local development" }
+            { url: PUBLIC_API_URL, description: "API server" }
         ],
         components: {
             securitySchemes: {
