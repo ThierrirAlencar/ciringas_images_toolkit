@@ -97,7 +97,7 @@
             </nav>
 
             <div class="border-t border-gray-800 px-6 py-4">
-                <span class="font-mono text-[10px] tracking-[0.2em] text-gray-600 uppercase">api · 127.0.0.1:4545</span>
+                <span id="sidebar-api-url" class="font-mono text-[10px] tracking-[0.2em] text-gray-600 uppercase">api</span>
             </div>
         </aside>
 
@@ -203,9 +203,10 @@
                         </svg>
                         <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Cutout</span>
                         <h2 class="mb-5 text-lg font-semibold text-gray-100">Remover background</h2>
-                        <form action="http://127.0.0.1:4545/image/process/remove" method="post" enctype="multipart/form-data" id="form3" class="mt-auto flex flex-col gap-3">
+                        <form method="post" enctype="multipart/form-data" id="form3" class="mt-auto flex flex-col gap-3">
                             <label for="sub_file3" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
                                 Selecionar imagem
+                                <span id="sub_file3-status" class="mt-2 block truncate text-xs text-gray-500" aria-live="polite">Nenhuma imagem selecionada</span>
                                 <input type="file" name="avatar" id="sub_file3" class="hidden">
                             </label>
                             <input type="submit" class="subInputs cursor-pointer rounded-lg bg-violet-800 py-2.5 font-medium text-white transition-colors hover:bg-violet-700" value="Processar Imagem">
@@ -226,9 +227,10 @@
                         </svg>
                         <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Resize</span>
                         <h2 class="mb-5 text-lg font-semibold text-gray-100">Alterar escala</h2>
-                        <form action="http://127.0.0.1:4545/image/process/rescale" method="post" enctype="multipart/form-data" id="form1" class="mt-auto flex flex-col gap-3">
+                        <form method="post" enctype="multipart/form-data" id="form1" class="mt-auto flex flex-col gap-3">
                             <label for="sub_file2" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
                                 Selecionar imagem
+                                <span id="sub_file2-status" class="mt-2 block truncate text-xs text-gray-500" aria-live="polite">Nenhuma imagem selecionada</span>
                                 <input type="file" name="avatar" id="sub_file2" class="hidden">
                             </label>
                             <input type="number" name="scale" placeholder="Fator de escala" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-200 placeholder-gray-500 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
@@ -250,9 +252,10 @@
                         </svg>
                         <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Effects</span>
                         <h2 class="mb-5 text-lg font-semibold text-gray-100">Aplicar Efeitos</h2>
-                        <form action="http://127.0.0.1:4545/image/process/effect" method="post" enctype="multipart/form-data" id="form2" class="mt-auto flex flex-col gap-3">
+                        <form method="post" enctype="multipart/form-data" id="form2" class="mt-auto flex flex-col gap-3">
                             <label for="sub_file2b" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
                                 Selecionar imagem
+                                <span id="sub_file2b-status" class="mt-2 block truncate text-xs text-gray-500" aria-live="polite">Nenhuma imagem selecionada</span>
                                 <input type="file" name="avatar" id="sub_file2b" class="hidden">
                             </label>
                             <select name="Effect" id="select1" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-300 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
@@ -285,9 +288,10 @@
                         </svg>
                         <span class="mb-2 font-mono text-[11px] uppercase tracking-widest text-violet-400/80">Faces</span>
                         <h2 class="mb-5 text-lg font-semibold text-gray-100">Detecção de Faces</h2>
-                        <form action="http://127.0.0.1:4545/image/process/faces" method="post" enctype="multipart/form-data" id="form4" class="mt-auto flex flex-col gap-3">
+                        <form method="post" enctype="multipart/form-data" id="form4" class="mt-auto flex flex-col gap-3">
                             <label for="sub_file4" class="cursor-pointer rounded-lg border border-dashed border-gray-700 bg-gray-900/60 px-3 py-4 text-center text-sm text-gray-400 transition-colors hover:border-violet-700 hover:text-violet-300">
                                 Selecionar imagem
+                                <span id="sub_file4-status" class="mt-2 block truncate text-xs text-gray-500" aria-live="polite">Nenhuma imagem selecionada</span>
                                 <input type="file" name="avatar" id="sub_file4" class="hidden">
                             </label>
                             <select name="Action" id="select2" class="rounded-lg border border-gray-700 bg-gray-900/60 px-3 py-2 text-sm text-gray-300 outline-none focus:border-violet-600 focus:ring-1 focus:ring-violet-600">
@@ -344,7 +348,7 @@
 
                     <div class="mt-10 flex flex-col items-center justify-between gap-3 border-t border-gray-800 pt-6 text-xs text-gray-600 sm:flex-row">
                         <span>&copy; <span id="footer-year"></span> Ciringas Image Toolkit.</span>
-                        <span class="font-mono uppercase tracking-[0.2em]">api · 127.0.0.1:4545</span>
+                        <span id="footer-api-url" class="font-mono uppercase tracking-[0.2em]">api</span>
                     </div>
                 </div>
             </footer>
@@ -359,7 +363,11 @@
     const authContainer = document.getElementById('account');
     const header = document.getElementById("main-header");
 
-    const apiBase = "http://localhost:4545";
+    const apiBase = window.location.origin;
+
+    document.querySelectorAll('#sidebar-api-url, #footer-api-url').forEach((element) => {
+        element.textContent = `api · ${window.location.host}`;
+    });
 
     const apiFormEndpoints = {
         'api-form-remove-background': `${apiBase}/image/remove`,
@@ -617,6 +625,7 @@
 
 <script src="functions/forms.js" type="module"></script>
 <script type="module" src="functions/controlRange.js"></script>
+<script type="module" src="functions/fileInputStatus.js"></script>
 <script src="functions/apiCalls/BgRemove.js" type="module"></script>
 <script src="functions/apiCalls/ReescaleImage.js" type="module"></script>
 <script src="functions/apiCalls/ApplyEffectToImage.js" type="module"></script>

@@ -1,4 +1,4 @@
-import { API_URL } from "./config/config"
+import { API_URL, PUBLIC_API_URL } from "./config/config"
 import { app } from "./core/app"
 import { HOST, PORT } from "./core/env"
 
@@ -8,5 +8,5 @@ app.listen({
 },(err,path)=>{
     console.log(
         err?err:
-        `serving api at:${API_URL}\nserving documentation at:${API_URL}/docs`)
+        `serving api at:${PUBLIC_API_URL}\nserving documentation at:${PUBLIC_API_URL}/docs`)
 })
